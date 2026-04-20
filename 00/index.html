@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第00講：コマンドラインの使い方</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      body {
+        background-color: #c0c0c0;
+        font-family: 'MS PGothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .blink {
+        animation: blink 1s infinite;
+      }
+    </style>
+  </head>
+
+  <body class="text-black pb-10">
+    <header class="text-center py-10">
+      <div class="inline-block bg-white border-4 border-gray-500 shadow-[4px_4px_0_#888] px-8 py-4 text-left">
+        <h1 class="text-2xl font-bold text-red-600 border-b-4 border-double border-red-500 pb-2 text-center">
+          第00講：コマンドラインの使い方
+        </h1>
+
+        <p class="mt-3 text-sm">
+          競技プログラミングの第一歩。 <br />
+          マウスを捨てて、キーボードでPCを操る感覚を掴もう。
+        </p>
+
+        <p class="mt-2 blink text-red-600 font-bold text-center">★ 黒い画面のコマンドライン ★</p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4">
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 mb-10 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          必須コマンド 7選
+        </h2>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm border-collapse border border-black">
+            <thead class="bg-gray-200">
+              <tr>
+                <th class="border border-black p-2">コマンド</th>
+                <th class="border border-black p-2 text-blue-800">フルスペル</th>
+                <th class="border border-black p-2">説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="bg-white hover:bg-yellow-50">
+                <td class="border border-black p-2"><code>ls</code></td>
+                <td class="border border-black p-2 text-xs italic">list</td>
+                <td class="border border-black p-2">現在のフォルダ内のファイルを表示</td>
+              </tr>
+              <tr class="bg-white hover:bg-yellow-50">
+                <td class="border border-black p-2"><code>mkdir</code></td>
+                <td class="border border-black p-2 text-xs italic">make directory</td>
+                <td class="border border-black p-2">新しいフォルダを作成</td>
+              </tr>
+              <tr class="bg-white hover:bg-yellow-50">
+                <td class="border border-black p-2"><code>cd</code></td>
+                <td class="border border-black p-2 text-xs italic">change directory</td>
+                <td class="border border-black p-2">フォルダへ移動（<code>cd ..</code>で戻る）</td>
+              </tr>
+              <tr class="bg-white hover:bg-yellow-50">
+                <td class="border border-black p-2"><code>cp</code></td>
+                <td class="border border-black p-2 text-xs italic">copy</td>
+                <td class="border border-black p-2">ファイルをコピー（複製）する</td>
+              </tr>
+              <tr class="bg-white hover:bg-yellow-50">
+                <td class="border border-black p-2"><code>mv</code></td>
+                <td class="border border-black p-2 text-xs italic">move</td>
+                <td class="border border-black p-2">移動・名前変更（上書き注意！）</td>
+              </tr>
+              <tr class="bg-white hover:bg-yellow-50">
+                <td class="border border-black p-2"><code>g++</code></td>
+                <td class="border border-black p-2 text-xs italic">GNU C++ Compiler</td>
+                <td class="border border-black p-2">ソースコードを機械語に変換</td>
+              </tr>
+              <tr class="bg-white hover:bg-yellow-50">
+                <td class="border border-black p-2"><code>./a.out</code></td>
+                <td class="border border-black p-2 text-xs italic">execute current</td>
+                <td class="border border-black p-2">コンパイルしたプログラムを実行</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="space-y-6 mb-10">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1">
+          コマンド実行シミュレーション（📍 ＝ 現在地）
+        </h2>
+
+        <div class="bg-white border-2 border-gray-400 p-4 shadow-[3px_3px_0_#000]">
+          <h3 class="text-blue-700 font-bold mb-2">STEP 0：現状確認</h3>
+          <div class="bg-black text-green-400 font-mono p-3 mb-2">$ ls</div>
+          <pre class="bg-gray-100 border border-gray-300 p-2 text-xs font-mono">
+📍 /home/user/
+└── (空っぽ)</pre
+          >
+        </div>
+
+        <div class="bg-white border-2 border-gray-400 p-4 shadow-[3px_3px_0_#000]">
+          <h3 class="text-blue-700 font-bold mb-2">STEP 1：フォルダ作成</h3>
+          <div class="bg-black text-green-400 font-mono p-3 mb-2">$ mkdir folder</div>
+          <pre class="bg-gray-100 border border-gray-300 p-2 text-xs font-mono">
+📍 /home/user/
+└── folder/ <span class="text-orange-600 font-bold">(NEW!)</span></pre>
+        </div>
+
+        <div class="bg-white border-2 border-gray-400 p-4 shadow-[3px_3px_0_#000]">
+          <h3 class="text-blue-700 font-bold mb-2">STEP 2：フォルダへ潜る</h3>
+          <div class="bg-black text-green-400 font-mono p-3 mb-2">$ cd folder</div>
+          <pre class="bg-gray-100 border border-gray-300 p-2 text-xs font-mono">
+/home/user/
+└── 📍 folder/ <span class="text-red-600 font-bold">(移動完了)</span></pre>
+        </div>
+
+        <div class="bg-white border-2 border-gray-400 p-4 shadow-[3px_3px_0_#000]">
+          <h3 class="text-blue-700 font-bold mb-2">STEP 3：エディタ起動</h3>
+          <div class="bg-black text-green-400 font-mono p-3 mb-2">$ code sample.cpp</div>
+          <pre class="bg-gray-100 border border-gray-300 p-2 text-xs font-mono">
+📍 folder/
+└── sample.cpp <span class="text-orange-600 font-bold">(保存完了)</span></pre>
+        </div>
+
+        <div class="bg-white border-2 border-gray-400 p-4 shadow-[3px_3px_0_#000]">
+          <h3 class="text-blue-700 font-bold mb-2">STEP 4：コンパイル</h3>
+          <div class="bg-black text-green-400 font-mono p-3 mb-2">$ g++ sample.cpp</div>
+          <pre class="bg-gray-100 border border-gray-300 p-2 text-xs font-mono">
+📍 folder/
+├── sample.cpp
+└── a.out <span class="text-blue-600 font-bold">(生成成功)</span></pre>
+        </div>
+
+        <div class="bg-white border-2 border-gray-400 p-4 shadow-[3px_3px_0_#000]">
+          <h3 class="text-blue-700 font-bold mb-2">STEP 5：プログラム実行</h3>
+          <div class="bg-black text-green-400 font-mono p-3 mb-2">$ ./a.out</div>
+          <div class="bg-black text-white p-3 font-mono border-t border-gray-700">Hello World!</div>
+        </div>
+
+        <div class="bg-white border-2 border-gray-400 p-4 shadow-[3px_3px_0_#000]">
+          <h3 class="text-blue-700 font-bold mb-2">STEP 6：整理用のフォルダ作成</h3>
+          <div class="bg-black text-green-400 font-mono p-3 mb-2">$ mkdir folder2</div>
+          <pre class="bg-gray-100 border border-gray-300 p-2 text-xs font-mono">
+📍 folder/
+├── a.out
+├── sample.cpp
+└── folder2/ <span class="text-orange-600 font-bold">(NEW!)</span></pre>
+        </div>
+
+        <div class="bg-white border-2 border-gray-400 p-4 shadow-[3px_3px_0_#000]">
+          <h3 class="text-blue-700 font-bold mb-2">STEP 7：ファイル移動</h3>
+          <div class="bg-black text-green-400 font-mono p-3 mb-2">$ mv sample.cpp folder2/</div>
+          <pre class="bg-gray-100 border border-gray-300 p-2 text-xs font-mono">
+📍 folder/
+├── a.out
+└── folder2/
+      └── sample.cpp <span class="text-green-600 font-bold">(移動完了)</span></pre>
+        </div>
+
+        <div class="bg-white border-2 border-gray-400 p-4 shadow-[3px_3px_0_#000]">
+          <h3 class="text-blue-700 font-bold mb-2">STEP 8：中身を確認</h3>
+          <div class="bg-black text-green-400 font-mono p-3 mb-2">$ ls</div>
+          <div class="bg-gray-100 border border-gray-300 p-2 text-xs font-mono">a.out folder2</div>
+        </div>
+
+        <div class="bg-white border-2 border-gray-400 p-4 shadow-[3px_3px_0_#000]">
+          <h3 class="text-blue-700 font-bold mb-2">STEP 9：深い階層へ移動</h3>
+          <div class="bg-black text-green-400 font-mono p-3 mb-2">$ cd folder2</div>
+          <pre class="bg-gray-100 border border-gray-300 p-2 text-xs font-mono">
+folder/
+└── 📍 folder2/
+      └── sample.cpp</pre
+          >
+        </div>
+
+        <div class="bg-white border-2 border-gray-400 p-4 shadow-[3px_3px_0_#000]">
+          <h3 class="text-blue-700 font-bold mb-2">STEP 10：最終確認</h3>
+          <div class="bg-black text-green-400 font-mono p-3 mb-2">$ ls</div>
+          <div class="bg-gray-100 border border-gray-300 p-2 text-xs font-mono">sample.cpp</div>
+        </div>
+      </section>
+
+      <section class="bg-yellow-100 border-4 border-yellow-600 p-6 shadow-[4px_4px_0_#888]">
+        <h2 class="font-bold text-lg mb-3">💡 作業を効率化するTips</h2>
+        <ul class="text-sm list-disc ml-5 space-y-1">
+          <li><strong>Tabキー：</strong> 入力中のフォルダ名を自動で補完します。</li>
+          <li><strong>↑キー：</strong> 一つ前に打ったコマンドを呼び出せます。</li>
+          <li><strong>Ctrl + C：</strong> 無限ループなどでプログラムを止めたい時に使います。</li>
+          <li><strong>pwd：</strong> 今いる場所の「フルパス」を表示します。</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="text-center py-10">
+      <div class="inline-block bg-white border-2 border-gray-400 px-6 py-2 shadow-[2px_2px_0_#000] text-sm font-bold">
+        IQ C++ Spring Workshop 2026
+      </div>
+    </footer>
+  </body>
+</html>

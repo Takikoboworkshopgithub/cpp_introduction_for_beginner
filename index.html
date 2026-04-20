@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C++ 初心者講習会 カリキュラムポータル</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      body {
+        background-color: #c0c0c0;
+        font-family: 'MS PGothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .blink {
+        animation: blink 1s infinite;
+      }
+
+      .win-border {
+        border: 4px solid;
+        border-color: #ffffff #808080 #808080 #ffffff;
+      }
+      .win-button {
+        border: 2px solid;
+        border-color: #ffffff #808080 #808080 #ffffff;
+        background-color: #c0c0c0;
+      }
+      .win-button:active {
+        border-color: #808080 #ffffff #ffffff #808080;
+        padding-top: 2px;
+        padding-left: 2px;
+      }
+    </style>
+  </head>
+
+  <body class="text-black pb-20">
+    <header class="text-center py-10">
+      <div class="inline-block bg-white border-4 border-gray-500 shadow-[4px_4px_0_#888] px-8 py-4 text-left">
+        <h1 class="text-2xl font-bold text-red-600 border-b-4 border-double border-red-500 pb-2 text-center">
+          C++ 初心者講習会：10講マスターコース・基礎編
+        </h1>
+        <p class="mt-3 text-sm text-center">〜ICPC 3完 & AtCoder 茶色レベルを目指して〜</p>
+        <p class="mt-2 blink text-blue-700 font-bold text-center">現在 3 講義公開中！！</p>
+      </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-4 flex flex-col justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-2">
+              第00講：CLIツール
+            </h2>
+            <p class="text-xs mb-3 text-gray-600 italic">/00/index.html</p>
+            <p class="text-sm">競技プログラミングの第一歩。ターミナルコマンド（ls, cd, g++等）をマスターします。</p>
+          </div>
+          <a href="./00/index.html" class="mt-4 text-center win-button py-1 font-bold text-sm hover:bg-yellow-100"
+            >開く(O)</a
+          >
+        </div>
+
+        <div class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-4 flex flex-col justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-2">
+              第01講：入出力と計算
+            </h2>
+            <p class="text-xs mb-3 text-gray-600 italic">/01/index.html</p>
+            <p class="text-sm">main関数、入出力（cin/cout）、基本データ型（int, double）と型の限界を学びます。</p>
+          </div>
+          <a href="./01/index.html" class="mt-4 text-center win-button py-1 font-bold text-sm hover:bg-yellow-100"
+            >開く(O)</a
+          >
+        </div>
+
+        <div class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-4 flex flex-col justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-2">
+              第02講：条件分岐
+            </h2>
+            <p class="text-xs mb-3 text-gray-600 italic">/02/index.html</p>
+            <p class="text-sm">if文による論理構造、C++特有の真偽値、爆速入出力のおまじないを習得します。</p>
+          </div>
+          <a href="./02/index.html" class="mt-4 text-center win-button py-1 font-bold text-sm hover:bg-yellow-100"
+            >開く(O)</a
+          >
+        </div>
+
+        <div class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-4 flex flex-col justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-2">
+              第03講：繰り返し処理
+            </h2>
+            <p class="text-xs mb-3 text-gray-600 italic">/03/index.html</p>
+            <p class="text-sm">for/while文。マクロ「rep」の導入、1億次ループの計算量感覚を体感します。</p>
+          </div>
+          <a href="./03/index.html" class="mt-4 text-center win-button py-1 font-bold text-sm hover:bg-yellow-100"
+            >開く(O)</a
+          >
+        </div>
+
+        <div class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-4 flex flex-col justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-2">
+              第04講：関数と参照
+            </h2>
+            <p class="text-xs mb-3 text-gray-600 italic">/04/index.html</p>
+            <p class="text-sm">関数の部品化、ポインタを使わない「参照渡し」、再帰関数の基礎を学びます。</p>
+          </div>
+          <a href="./04/index.html" class="mt-4 text-center win-button py-1 font-bold text-sm hover:bg-yellow-100"
+            >開く(O)</a
+          >
+        </div>
+
+        <div class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-4 flex flex-col justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-green-900 bg-green-100 border-l-4 border-green-900 px-3 py-1 mb-2">
+              第05講：vectorと文字列
+            </h2>
+            <p class="text-xs mb-3 text-gray-600 italic">/05/index.html</p>
+            <p class="text-sm">動的配列vector、string操作。Bashエイリアスやリダイレクトによる効率化も。</p>
+          </div>
+          <a href="./05/index.html" class="mt-4 text-center win-button py-1 font-bold text-sm hover:bg-yellow-100"
+            >開く(O)</a
+          >
+        </div>
+
+        <div class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-4 flex flex-col justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-green-900 bg-green-100 border-l-4 border-green-900 px-3 py-1 mb-2">
+              第06講：STL(1) ソート
+            </h2>
+            <p class="text-xs mb-3 text-gray-600 italic">/06/index.html</p>
+            <p class="text-sm">sort, reverse, pair。イテレータの概念を「配列を指す矢印」として理解します。</p>
+          </div>
+          <a href="./06/index.html" class="mt-4 text-center win-button py-1 font-bold text-sm hover:bg-yellow-100"
+            >開く(O)</a
+          >
+        </div>
+
+        <div class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-4 flex flex-col justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-green-900 bg-green-100 border-l-4 border-green-900 px-3 py-1 mb-2">
+              第07講：STL(2) 高速管理
+            </h2>
+            <p class="text-xs mb-3 text-gray-600 italic">/07/index.html</p>
+            <p class="text-sm">set, map, queue, stack。浮動小数点の誤差対策など実践的なTipsも紹介。</p>
+          </div>
+          <a href="./07/index.html" class="mt-4 text-center win-button py-1 font-bold text-sm hover:bg-yellow-100"
+            >開く(O)</a
+          >
+        </div>
+
+        <div class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-4 flex flex-col justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-red-900 bg-red-100 border-l-4 border-red-900 px-3 py-1 mb-2">
+              第08講：累積和・二分探索
+            </h2>
+            <p class="text-xs mb-3 text-gray-600 italic">/08/index.html</p>
+            <p class="text-sm">計算量 O(log N) の威力。スニペットを活用した高速コーディングを伝授。</p>
+          </div>
+          <a href="./08/index.html" class="mt-4 text-center win-button py-1 font-bold text-sm hover:bg-yellow-100"
+            >開く(O)</a
+          >
+        </div>
+
+        <div class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-4 flex flex-col justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-red-900 bg-red-100 border-l-4 border-red-900 px-3 py-1 mb-2">
+              第09講：ICPC演習(1)
+            </h2>
+            <p class="text-xs mb-3 text-gray-600 italic">/09/index.html</p>
+            <p class="text-sm">過去問A・B問題の解剖。標準エラー出力 `cerr` を用いた最強のデバッグ術。</p>
+          </div>
+          <a href="./09/index.html" class="mt-4 text-center win-button py-1 font-bold text-sm hover:bg-yellow-100"
+            >開く(O)</a
+          >
+        </div>
+
+        <div
+          class="col-span-1 md:col-span-2 bg-yellow-100 border-4 border-yellow-600 shadow-[4px_4px_0_#888] p-4 flex flex-col justify-between"
+        >
+          <div>
+            <h2 class="text-lg font-bold text-red-900 bg-red-100 border-l-4 border-red-900 px-3 py-1 mb-2">
+              第10講：ICPC演習(2) 最終試験
+            </h2>
+            <p class="text-xs mb-3 text-gray-600 italic">/10/index.html</p>
+            <p class="text-sm">B〜C問題、bit全探索。提出前チェックリストとメモリ制限の守り方を学びます。</p>
+          </div>
+          <a
+            href="./10/index.html"
+            class="mt-4 text-center win-button py-1 font-bold text-sm bg-yellow-200 hover:bg-yellow-300"
+            >最終講義を開始する</a
+          >
+        </div>
+      </div>
+    </main>
+
+    <footer class="text-center py-10">
+      <div
+        class="inline-block bg-white border-2 border-gray-400 px-6 py-2 shadow-[2px_2px_0_#000] text-sm font-bold italic"
+      >
+        (C) 2026 IQ style C++ Curriculum Support Unit
+      </div>
+    </footer>
+  </body>
+</html>

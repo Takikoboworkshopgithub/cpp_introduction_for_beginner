@@ -1,0 +1,115 @@
+!コードは全部タップでコピーできるようにする
+
+01.Welcome to C++
+
+これからプログラミングを始める的なくだけた紹介文
+
+C++を学ぶとこんなことができる的なもの
+
+基本の書き方
+
+[#include<bits/stdc++.h>
+using namespace std;
+int main(){
+/*この中に命令を書いていく*/
+return 0;
+}
+]
+
+#include<>はC++の色んな機能を使えるようにしたお得セットみたいなもの
+プログラミング言語はmain()の中に書いたものが順番に実行されていく感じ。(ほかの言語でもそうだよみたいな例を載せるRustとかかな)
+
+基本の計算(どの言語でも共通)
+
+和
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+  cout << 10 + 20 << endl; -> 30
+return 0;
+}
+差
+cout << 10 - 5 << endl; -> 5
+積
+cout << -10 * -20 << endl; -> 200
+商
+※注意: 小数点以下は切り捨て
+cout << 20 / 3 << endl; -> 6
+
+余り
+cout << 20 % 3 << endl; -> 2
+
+
+変数とは
+
+整数や小数、文字を入れる箱のようなもの。型の代表例は
+
+int: 整数
+double: 小数
+string: 文字列
+※取り敢えずここ辺りを覚えておけば大丈夫
+
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+  int i = 100;
+  double d = 1.5;
+  string s = "This is string";
+  cout << i << endl;
+  cout << d << endl;
+  cout << s << endl;
+  return 0;
+}
+
+出力結果
+[
+100
+1.5
+This is string
+]
+
+入力※めっちゃ重要
+コマンドから入力したいときに用いる。
+
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+  int i;
+  cin >> i;
+  cout << i << endl;
+  return 0;
+}
+
+空白区切りで入力されることに注意
+
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+  int first;
+  int second;
+  cin >> first;
+  cin >> second;
+  cout << i << endl;
+  return 0;
+}
+
+簡単な書き方
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+  int first;
+  int second;
+  cin >> first >> second;
+  cout << i << endl;
+  return 0;
+}
+
+
+サンプルコード(mを入力したらcm単位で返ってくるようなコード)
+
+コードは隠す
+
+
+ばちゃこん
+
+

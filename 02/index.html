@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第02講：条件分岐と「論理」</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+
+    <style>
+      body {
+        background-color: #c0c0c0;
+        font-family: 'MS PGothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .blink {
+        animation: blink 1s infinite;
+      }
+
+      /* highlight.jsの背景をレトロな白に調整 */
+      .hljs {
+        background: #ffffff !important;
+        padding: 1rem !important;
+        border: 1px solid #808080 !important;
+      }
+    </style>
+  </head>
+
+  <body class="text-black pb-10">
+    <header class="text-center py-10">
+      <div class="inline-block bg-white border-4 border-gray-500 shadow-[4px_4px_0_#888] px-8 py-4 text-left">
+        <h1 class="text-2xl font-bold text-red-600 border-b-4 border-double border-red-500 pb-2 text-center">
+          第02講：条件分岐と「論理」
+        </h1>
+        <p class="mt-3 text-sm">
+          プログラムに「判断」をさせる方法を学ぼう。 <br />
+          C++特有の真偽値の扱いと、実戦的な高速化テクニックを解説。
+        </p>
+        <p class="mt-2 blink text-red-600 font-bold text-center">★ 条件分岐させてみよう ★</p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4">
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 mb-10 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          1. if構文とスコープ
+        </h2>
+        <p class="text-sm mb-4">
+          C++の条件分岐は <code>{ }</code> でブロックを作ります。1行でも省略しないのが競プロの安全策です。
+        </p>
+
+        <div class="mb-4">
+          <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int score = 85;
+
+    if (score >= 80) {
+        cout << "合格です！" << endl;
+    } else if (score >= 60) {
+        cout << "追試です。" << endl;
+    } else {
+        cout << "不合格です。" << endl;
+    }
+}</code></pre>
+        </div>
+        <div class="bg-black text-white p-3 font-mono border-t border-gray-700 text-sm">
+          <span class="text-gray-400">出力：</span><br />
+          合格です！
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 mb-10 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          2. 比較演算子と論理演算子
+        </h2>
+        <p class="text-sm mb-4">
+          「かつ(<code>&&</code>)」「または(<code>||</code>)」「否定(<code>!</code>)」を使いこなしましょう。
+        </p>
+
+        <div class="mb-4">
+          <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int age = 20;
+    bool has_ticket = true;
+
+    if (age >= 18 && has_ticket) {
+        cout << "入場可能です。" << endl;
+    }
+
+    if (age < 18 || !has_ticket) {
+        cout << "入場できません。" << endl;
+    }
+}</code></pre>
+        </div>
+        <div class="bg-black text-white p-3 font-mono border-t border-gray-700 text-sm">
+          <span class="text-gray-400">出力：</span><br />
+          入場可能です。
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 mb-10 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          3. C++の「真偽値」の正体（整数評価）
+        </h2>
+        <p class="text-sm mb-4">C++では <strong>「0なら偽、0以外ならすべて真」</strong> と判定されます。</p>
+
+        <div class="mb-4">
+          <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int n = 10;
+
+    if (n) {
+        cout << "nは0ではありません。" << endl;
+    }
+
+    if (n % 2) {
+        cout << "nは奇数です。" << endl;
+    } else {
+        cout << "nは偶数です。" << endl;
+    }
+}</code></pre>
+        </div>
+        <div class="bg-black text-white p-3 font-mono border-t border-gray-700 text-sm">
+          <span class="text-gray-400">出力：</span><br />
+          nは0ではありません。<br />
+          nは偶数です。
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 mb-10 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          4. 爆速入出力の「おまじない」
+        </h2>
+        <p class="text-sm mb-4">大量のデータをさばくICPCやAtCoderでは必須の高速化設定です。</p>
+
+        <pre><code class="language-cpp">int main() {
+    // 爆速化のおまじない（mainの先頭に書く）
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    // 処理...
+}</code></pre>
+        <p class="mt-4 text-xs text-gray-600 italic">※ これを書くだけで実行時間が数分の一になることがあります。</p>
+      </section>
+
+      <section class="bg-yellow-100 border-4 border-yellow-600 p-6 shadow-[4px_4px_0_#888]">
+        <h2 class="font-bold text-lg mb-3">📝 演習問題</h2>
+        <div class="space-y-6">
+          <div class="bg-white border-2 border-gray-400 p-4 shadow-[2px_2px_0_#888]">
+            <h3 class="font-bold text-blue-800 border-b border-blue-200 mb-2">演習①：閏年判定</h3>
+            <p class="text-sm">
+              西暦 Y を入力し、「400で割り切れる」または「4で割り切れるが100で割り切れない」場合に
+              <code>Yes</code>、それ以外に <code>No</code> と出力するプログラムを作成せよ。
+            </p>
+          </div>
+          <div class="bg-white border-2 border-gray-400 p-4 shadow-[2px_2px_0_#888]">
+            <h3 class="font-bold text-blue-800 border-b border-blue-200 mb-2">演習②：FizzBuzz (if版)</h3>
+            <p class="text-sm">
+              整数 N を入力し、15の倍数なら <code>FizzBuzz</code>、3の倍数なら <code>Fizz</code>、5の倍数なら
+              <code>Buzz</code>、それ以外なら数字を出力せよ。判定の順番に注意すること。
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="text-center py-10">
+      <div class="inline-block bg-white border-2 border-gray-400 px-6 py-2 shadow-[2px_2px_0_#000] text-sm font-bold">
+        IQ C++ Spring Workshop 2026
+      </div>
+    </footer>
+  </body>
+</html>
