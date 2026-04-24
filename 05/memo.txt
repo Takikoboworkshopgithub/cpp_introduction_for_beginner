@@ -1,0 +1,145 @@
+!コードは全部タップでコピーできるようにする
+
+05.配列と文字列
+
+1.一次元配列
+
+クラス10人の点数を保存するようなコードを書きたい。
+解決策？
+int main(){
+  /*10人分の変数を確保*/
+  int a,b,c,d,....j;
+  a = 60;
+  b = 80;
+  c = 0;
+  ...
+}
+
+1次元配列は、箱が横に連なっているようなもの。[./images/hako.png]
+intの箱がたくさんあるようなものを考えてみる。
+
+宣言の仕方と解決策
+
+int main(){
+  vector<int> test(10);//testが変数にあたる
+  test[0] = 60;
+  test[1] = 80;
+  test[2] = 0;
+  ...
+}
+
+※注意1 配列は0番目から始まる。最初のうちは1番目と勘違いしてバグらせがち
+
+※注意2 存在しない場所を指定するとバグる
+
+int main(){
+  vector<int> a(10);
+  cout << a[10] << endl;//配列は0~9しかないのでエラー
+}
+
+よくある書き方
+
+入力
+N
+A_1,A_2 ... A_N
+
+Aの合計を求めて
+
+int main(){
+  int sum = 0;
+  int N;
+  cin >> N;
+  vector<int> a(N);
+  for(int i = 0;i < N; i++){
+    cin >> a[i];
+  }
+  for(int i = 0;i < N; i++){
+    sum = sum + a[i];
+    //sum += a[i];でも可
+  }
+  cout << sum << endl;
+}
+
+2.文字列
+
+今までは数字のみを扱ってきたが、string型を理解しよう。
+
+
+宣言
+string s;//sが変数
+
+コード例
+
+int main(){
+  string s = "Hello";
+  cout << s.size() << endl;//文字の長さを出力
+  cout << s[0] << endl;//"Hello"の最初の文字を出力
+}
+
+文字列は""、文字一つは''で囲む(JISなら"" = 2+shiftキー, '' = 7 + shiftキーで出せる。)
+
+#include<bits/stdc++.h>
+
+using namespace std;
+
+int main(){
+  string s = "C++ is a high-level, general-purpose programming language created by Danish computer scientist Bjarne Stroustrup.";
+  int count = 0;
+  /*sという文字がいくつあるかを数える*/
+  for(int i = 0;i < s.size(); i++){
+    
+    if(s[i] == 's'){
+      count++;
+    }
+  }
+  cout << count << endl;
+}
+
+
+3.二次元配列
+/
+クラス10人の国英数の点数を保存したい。
+
+解決策？
+
+int main(){
+  vector<int> Japanese(10):
+  vector<int> English(10);
+  vector<int> Mathmatics(10);
+}
+
+理想は、配列1個の中に3つの教科を入れたい。
+
+[./images/nizigen]
+書き方
+int main(){
+  /*3つの大きな箱の中にvector<int>があるイメージ*/
+ vector<vector<int>> test(3,vector<int>(10));
+ /*出席番号1番の国語の成績は*/
+ cout << test[0][0] << endl;
+ /*出席番号5番の数学の成績は*/
+ cout << test[2][4] << endl;//0始まりに注意
+}
+
+
+使用例
+
+二次元配列に9x9の表を入れたい
+
+int main(){
+  vector<vector<int>> kuku(9,vector<int>(9));
+  for(int i = 1; i <= 9;i++){
+    for(int j = 1; j <= 9;j++){
+      kuku[i][j] = i * j;
+    }
+  }
+}
+
+
+
+
+演習問題
+
+1.配列の要素を全部10倍して出力 ex.) [1,2,3] -> [10,20,30]
+2.文字列を反転させる ex.)yes -> sey,level -> level, Palindrome ->emordnilaP
+3.10x10の配列で、i+jが偶数なら1、奇数なら0を格納し、10x10を出力する

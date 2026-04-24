@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第06講：STL(1) 便利ツールと並び替え | IQ C++講習会</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+
+    <style>
+      body {
+        background-color: #c0c0c0;
+        font-family: 'MS PGothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .blink {
+        animation: blink 1s infinite;
+      }
+      .win-panel {
+        border: 2px solid;
+        border-color: #ffffff #808080 #808080 #ffffff;
+      }
+      pre {
+        background: #ffffff !important;
+        border: 2px solid #808080 !important;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        border-radius: 0px;
+        margin: 0.5rem 0 !important;
+        padding: 1rem !important;
+        overflow-x: auto;
+      }
+      code.hljs {
+        background: transparent !important;
+        font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace !important;
+        font-size: 0.9rem !important;
+        padding: 0 !important;
+        color: #000000;
+      }
+      .code-container {
+        position: relative;
+        height: 100%;
+      }
+      .retro-img {
+        display: block;
+        max-width: 100%;
+        margin: 1rem auto;
+        background-color: #fff;
+        padding: 4px;
+      }
+    </style>
+  </head>
+
+  <body class="text-black pb-10">
+    <header class="text-center py-10">
+      <div class="inline-block bg-white border-4 border-gray-500 shadow-[4px_4px_0_#888] px-8 py-4 text-left">
+        <h1 class="text-2xl font-bold text-blue-800 border-b-4 border-double border-blue-500 pb-2 text-center">
+          第06講：STL(1) 便利ツールと並び替え
+        </h1>
+        <p class="mt-3 text-sm text-center font-bold">
+          C++の最強武器庫「STL」を使いこなす<br />
+          ソート、ペア、そして「イテレータ」の正体
+        </p>
+        <p class="mt-2 blink text-red-600 font-bold text-center">★ 自分で書かずに、ライブラリに任せよ ★</p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 space-y-10">
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          0. 本講のゴール
+        </h2>
+        <ul class="text-sm list-disc ml-5 space-y-2 mb-4">
+          <li><code>sort</code> と <code>reverse</code> でデータを自由自在に並び替える</li>
+          <li><code>min / max / abs / swap</code> などの便利関数を覚える</li>
+          <li><strong>「イテレータ」</strong>を「配列を指す矢印」としてイメージできる</li>
+          <li><code>pair</code> を使って2つの関連するデータをまとめて管理する</li>
+        </ul>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          1. 基本の便利ツール
+        </h2>
+        <p class="text-sm mb-4">数値を扱う際によく使う、短いけれど強力な関数たちです。</p>
+
+        <div class="code-container mb-6">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">int a = -10, b = 20, c = 30;
+
+cout << abs(a) << endl;    // 絶対値: 10
+cout << min(b, c) << endl; // 小さい方: 20
+cout << max(b, c) << endl; // 大きい方: 30
+
+swap(b, c);                // bとcの中身を入れ替える
+cout << b << " " << c << endl; // 30 20</code></pre>
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          2. ソートと反転（イテレータの理解）
+        </h2>
+        <p class="text-sm mb-4">
+          配列全体を操作するとき、<code>v.begin()</code>（先頭の矢印）と
+          <code>v.end()</code>（末尾の次を指す矢印）を指定します。
+        </p>
+
+        <div class="code-container mb-6">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">vector&lt;int&gt; v = {3, 1, 4, 1, 5, 9};
+
+// 小さい順に並び替え
+sort(v.begin(), v.end()); 
+// 結果: {1, 1, 3, 4, 5, 9}
+
+// 配列の前後をひっくり返す
+reverse(v.begin(), v.end());
+// 結果: {9, 5, 4, 3, 1, 1}</code></pre>
+        </div>
+
+        <div class="bg-blue-50 border-2 border-blue-500 p-4 text-sm win-panel mb-4">
+          <p class="font-bold text-blue-800 mb-1">💡 豆知識：イテレータのイメージ</p>
+          <p>イテレータは「配列の特定の場所を指す矢印」です。</p>
+          <ul class="list-disc ml-5 mt-2">
+            <li><code>v.begin()</code>：0番目の要素を指す矢印</li>
+            <li><code>v.end()</code>：<strong>「最後の要素の、一つ後ろ」</strong>を指す矢印</li>
+          </ul>
+          <p class="mt-2 text-xs text-gray-600 italic text-center">
+            ※画像：[./images/iterator.png]（矢印が配列の端を指している図）
+          </p>
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          3. 二つの値をセットにする（pair）
+        </h2>
+        <p class="text-sm mb-4">「出席番号と点数」「x座標とy座標」など、セットで管理したいデータに使います。</p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">pair&lt;string, int&gt; p = {"Takiguchi", 100};
+
+cout << p.first << endl;  // 1つ目の値: Takiguchi
+cout << p.second << endl; // 2つ目の値: 100
+
+// vectorに入れると超強力
+vector&lt;pair&lt;int, int&gt;&gt; points;
+points.push_back({10, 20});
+points.push_back({5, 30});
+
+// pairのvectorをソートすると、まず first で比較、同じなら second で比較される！
+sort(points.begin(), points.end());</code></pre>
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          4. 便利な短縮形（chmax / chmin）
+        </h2>
+        <p class="text-sm mb-4">
+          競プロのコードでよく見る「値が大きければ更新する」という処理を1行で書くための関数です。
+        </p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">// これを main 関数の上に書いておく
+template&lt;class T&gt; bool chmax(T &a, const T &b) { 
+    if (a &lt; b) { a = b; return 1; } 
+    return 0; 
+}
+
+int main() {
+    int max_val = -1;
+    int score = 85;
+    
+    // もし score の方が大きければ max_val を更新する
+    chmax(max_val, score); 
+    cout << max_val << endl; // 85
+}</code></pre>
+        </div>
+      </section>
+
+      <section class="bg-yellow-100 border-4 border-yellow-600 p-6 shadow-[4px_4px_0_#888]">
+        <h2
+          class="font-bold text-xl mb-6 border-b-4 border-double border-yellow-600 pb-2 text-yellow-900 text-center tracking-widest"
+        >
+          💻 ワークショップ
+        </h2>
+
+        <div class="bg-white border-2 border-gray-400 p-6 shadow-[2px_2px_0_#888] win-panel mb-6">
+          <h3 class="font-bold text-yellow-800 border-b border-gray-300 pb-1 mb-4">演習：座標ソート</h3>
+          <p class="text-sm mb-4">
+            N個の座標 (x, y) が与えられます。これを「x座標が小さい順」に並び替えて出力してください。<br />
+            ただし、x座標が同じ場合は「y座標が小さい順」に並び替えてください。
+          </p>
+          <div class="bg-gray-100 p-3 text-xs font-mono border border-gray-300">
+            入力例：<br />
+            3<br />
+            10 20<br />
+            5 10<br />
+            10 15<br /><br />
+            出力例：<br />
+            5 10<br />
+            10 15<br />
+            10 20
+          </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-6">
+          <div class="flex-1 bg-white border-2 border-gray-500 p-5 shadow-[3px_3px_0_#888] win-panel">
+            <h3 class="font-bold text-lg mb-3 text-blue-900 border-b border-gray-300 pb-1">📚 まとめ</h3>
+            <ul class="text-sm list-disc ml-5 space-y-2">
+              <li><code>sort(v.begin(), v.end())</code> で一撃ソート</li>
+              <li>イテレータは「配列の場所を指す矢印」</li>
+              <li><code>pair</code> は複数データをまとめてソートするのに最強</li>
+              <li><code>chmax</code> で更新処理をスッキリさせる</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="text-center py-10">
+      <div
+        class="inline-block bg-white border-2 border-gray-400 px-6 py-2 shadow-[2px_2px_0_#000] text-sm font-bold text-gray-700 win-panel"
+      >
+        IQ C++ Spring Workshop 2026 - Rep. Takiguchi
+      </div>
+    </footer>
+
+    <script>
+      hljs.highlightAll();
+
+      function copyCode(btn) {
+        const container = btn.closest('.code-container');
+        const code = container.querySelector('code').innerText;
+        navigator.clipboard.writeText(code);
+
+        const originalText = btn.innerText;
+        btn.innerText = '完了！';
+        const defaultBg = 'bg-blue-600';
+
+        btn.classList.remove(defaultBg);
+        btn.classList.add('bg-green-600');
+
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('bg-green-600');
+          btn.classList.add(defaultBg);
+        }, 1500);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第07講：STL(2) 高速なデータ管理 | IQ C++講習会</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+
+    <style>
+      body {
+        background-color: #c0c0c0;
+        font-family: 'MS PGothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .blink {
+        animation: blink 1s infinite;
+      }
+      .win-panel {
+        border: 2px solid;
+        border-color: #ffffff #808080 #808080 #ffffff;
+      }
+      pre {
+        background: #ffffff !important;
+        border: 2px solid #808080 !important;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        border-radius: 0px;
+        margin: 0.5rem 0 !important;
+        padding: 1rem !important;
+        overflow-x: auto;
+      }
+      code.hljs {
+        background: transparent !important;
+        font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace !important;
+        font-size: 0.9rem !important;
+        padding: 0 !important;
+        color: #000000;
+      }
+      .code-container {
+        position: relative;
+        height: 100%;
+      }
+      .retro-img {
+        display: block;
+        max-width: 100%;
+        margin: 1rem auto;
+        background-color: #fff;
+        padding: 4px;
+      }
+      .memo-box {
+        background-color: #ffffe1;
+        border: 1px solid #000;
+        padding: 10px;
+        box-shadow: 2px 2px 0px #888;
+      }
+    </style>
+  </head>
+
+  <body class="text-black pb-10">
+    <header class="text-center py-10">
+      <div class="inline-block bg-white border-4 border-gray-500 shadow-[4px_4px_0_#888] px-8 py-4 text-left">
+        <h1 class="text-2xl font-bold text-blue-800 border-b-4 border-double border-blue-500 pb-2 text-center">
+          第07講：STL(2) 高速なデータ管理
+        </h1>
+        <p class="mt-3 text-sm text-center font-bold">
+          「検索」と「保持」の極意<br />
+          set, map, queue, stack を使いこなせ
+        </p>
+        <p class="mt-2 blink text-blue-700 font-bold text-center">★ 配列の限界を超え、アルゴリズムを加速せよ ★</p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 space-y-10">
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          0. 本講のゴール
+        </h2>
+        <ul class="text-sm list-disc ml-5 space-y-2 mb-4">
+          <li><strong>set</strong>：重複を自動で削除し、瞬時に要素の有無を判定する</li>
+          <li><strong>map</strong>：自由な「キー」でデータを紐付け、巨大な辞書を作る</li>
+          <li><strong>queue</strong>：先入れ先出しで、幅優先探索（BFS）の基礎を固める</li>
+          <li><strong>stack</strong>：後入れ先出しで、深さ優先探索（DFS）や逆順処理を理解する</li>
+        </ul>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          1. 重複を許さない魔法の箱：set
+        </h2>
+        <p class="text-sm mb-4">
+          <code>set</code> は、数学の「集合」と同じです。どんなに同じ値を
+          <code>insert</code> しても、内部では1つしか保持されません。また、要素は常に自動で昇順に並べられます。
+        </p>
+
+        <div class="code-container mb-6">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">set&lt;int&gt; s;
+s.insert(100);
+s.insert(50);
+s.insert(100); // 重複は自動で消える
+
+cout << "要素数: " << s.size() << endl; // 2
+
+// 特定の値があるか検索（爆速：O(log N)）
+if (s.count(50)) {
+    cout << "50は存在します" << endl;
+}</code></pre>
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          2. キーで引ける最強の辞書：map
+        </h2>
+        <p class="text-sm mb-4">配列の添字（<code>a[i]</code>）を数字以外（文字列など）に拡張したものです。</p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">map&lt;string, int&gt; inventory;
+inventory["Apple"] = 3;
+inventory["Banana"] = 10;
+
+// 加算も自由自在
+inventory["Apple"] += 5;
+
+cout << "Appleの在庫: " << inventory["Apple"] << endl; // 8</code></pre>
+        </div>
+
+        <div class="bg-blue-50 border-2 border-blue-500 p-4 text-sm win-panel">
+          <p class="font-bold text-blue-800">💡 データ構造の裏側</p>
+          <p class="text-xs mt-1">
+            <code>map</code> や
+            <code>set</code>
+            は内部で「赤黒木」というバランスの良い木構造を構築しています。これにより、100万件のデータから1つの値を探す際も、わずか20回程度の比較（log₂
+            100万）で完了します。
+          </p>
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          3. queue（キュー）：先入れ先出し (FIFO)
+        </h2>
+        <p class="text-sm mb-4">
+          レジの行列や、プリンタの印刷待ちと同じ仕組みです。<strong>「最初に来たものが、最初に処理される」</strong>のが鉄則です。
+        </p>
+
+        <div class="memo-box mb-6 text-center">
+          <p class="font-bold text-xs mb-2">【ビジュアルイメージ：トンネル】</p>
+          <p class="font-mono text-sm">[出口] ← (先にいれたもの) ← (あとでいれたもの) ← [入口]</p>
+        </div>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">queue&lt;int&gt; q;
+q.push(1); // [1]
+q.push(2); // [1, 2]
+q.push(3); // [1, 2, 3]
+
+while(!q.empty()){
+    cout << q.front() << " "; // 先頭を参照
+    q.pop(); // 先頭を削除
+}
+// 出力結果: 1 2 3</code></pre>
+        </div>
+        <p class="text-xs text-gray-700 bg-gray-100 p-2 border border-gray-300">
+          <strong>実用例：</strong> 迷路の最短経路を解く「幅優先探索（BFS）」では、この
+          <code>queue</code> を使って「今いる場所から1歩で行ける場所」を順番に管理します。
+        </p>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          4. stack（スタック）：後入れ先出し (LIFO)
+        </h2>
+        <p class="text-sm mb-4">
+          机に積み上げた本や、ブラウザの「戻る」ボタンと同じ仕組みです。<strong>「最後に置いたものが、真っ先に取り出される」</strong>のが特徴です。
+        </p>
+
+        <div class="memo-box mb-6 text-center">
+          <p class="font-bold text-xs mb-2">【ビジュアルイメージ：筒（底がある）】</p>
+          <div class="font-mono text-sm inline-block text-left border-x-2 border-b-2 px-4 py-2">
+            (あとでいれたもの) ← [出口 / 入口]<br />
+            (先にいれたもの)
+          </div>
+        </div>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">stack&lt;int&gt; st;
+st.push(10); // [10]
+st.push(20); // [10, 20]
+st.push(30); // [10, 20, 30]
+
+while(!st.empty()){
+    cout << st.top() << " "; // 一番上を参照
+    st.pop(); // 一番上を削除
+}
+// 出力結果: 30 20 10</code></pre>
+        </div>
+        <p class="text-xs text-gray-700 bg-gray-100 p-2 border border-gray-300">
+          <strong>実用例：</strong>
+          プログラムの関数呼び出しの管理や、カッコの対応関係のチェック、迷路を奥深く突き進む「深さ優先探索（DFS）」などで活躍します。
+        </p>
+      </section>
+
+      <section class="bg-yellow-100 border-4 border-yellow-600 p-6 shadow-[4px_4px_0_#888]">
+        <h2
+          class="font-bold text-xl mb-6 border-b-4 border-double border-yellow-600 pb-2 text-yellow-900 text-center tracking-widest"
+        >
+          💻 ワークショップ
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <div class="bg-white border-2 border-gray-400 p-4 shadow-[2px_2px_0_#888] win-panel">
+            <h3 class="font-bold text-yellow-800 border-b border-gray-300 pb-1 mb-2">演習 1：重複排除</h3>
+            <p class="text-sm font-bold">
+              N個の単語が入力されます。重複を除いて、アルファベット順にすべて出力してください。
+            </p>
+            <p class="text-xs text-gray-500 mt-1">
+              ヒント：<code>set&lt;string&gt;</code> に全部 <code>insert</code> するだけ！
+            </p>
+          </div>
+          <div class="bg-white border-2 border-gray-400 p-4 shadow-[2px_2px_0_#888] win-panel">
+            <h3 class="font-bold text-yellow-800 border-b border-gray-300 pb-1 mb-2">演習 2：単語の頻出度</h3>
+            <p class="text-sm font-bold">
+              与えられた文章の中に、それぞれの単語が「何回」現れたか集計して出力してください。
+            </p>
+            <p class="text-xs text-gray-500 mt-1">ヒント：<code>map&lt;string, int&gt;</code> を使いましょう。</p>
+          </div>
+        </div>
+
+        <div class="bg-white border-2 border-gray-500 p-5 shadow-[3px_3px_0_#888] win-panel">
+          <h3 class="font-bold text-lg mb-3 text-blue-900 border-b border-gray-300 pb-1">📚 第07講の「お気持ち」</h3>
+          <p class="text-sm leading-relaxed">
+            <code>set</code> や <code>map</code> は「賢い管理」、<code>queue</code> や
+            <code>stack</code> は「正しい順序の管理」を担当します。
+            これらを組み合わせることで、ただのデータの羅列が「意味のある情報」へと変わります。特に
+            <code>queue</code> を使った幅優先探索ができるようになると、解ける問題の世界がグッと広がります。
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="text-center py-10">
+      <div
+        class="inline-block bg-white border-2 border-gray-400 px-6 py-2 shadow-[2px_2px_0_#000] text-sm font-bold text-gray-700 win-panel"
+      >
+        IQ C++ Spring Workshop 2026 - Rep. Takiguchi
+      </div>
+    </footer>
+
+    <script>
+      hljs.highlightAll();
+
+      function copyCode(btn) {
+        const container = btn.closest('.code-container');
+        const code = container.querySelector('code').innerText;
+        navigator.clipboard.writeText(code);
+
+        const originalText = btn.innerText;
+        btn.innerText = '完了！';
+
+        const defaultBg = 'bg-blue-600';
+        btn.classList.remove(defaultBg);
+        btn.classList.add('bg-green-600');
+
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('bg-green-600');
+          btn.classList.add(defaultBg);
+        }, 1500);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第05講：配列と文字列 | IQ C++講習会</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+
+    <style>
+      body {
+        background-color: #c0c0c0;
+        font-family: 'MS PGothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .blink {
+        animation: blink 1s infinite;
+      }
+      .win-panel {
+        border: 2px solid;
+        border-color: #ffffff #808080 #808080 #ffffff;
+      }
+      pre {
+        background: #ffffff !important;
+        border: 2px solid #808080 !important;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        border-radius: 0px; /* レトロ感を出すため角丸排除 */
+        margin: 0.5rem 0 !important;
+        padding: 1rem !important;
+        overflow-x: auto;
+      }
+      code.hljs {
+        background: transparent !important;
+        font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace !important;
+        font-size: 0.9rem !important;
+        padding: 0 !important;
+        color: #000000;
+      }
+      .code-container {
+        position: relative;
+        height: 100%;
+      }
+      .code-container pre {
+        height: 100%;
+      }
+      .retro-img {
+        display: block;
+        max-width: 100%;
+        margin: 1rem auto;
+        background-color: #fff;
+        padding: 4px;
+      }
+    </style>
+  </head>
+
+  <body class="text-black pb-10">
+    <header class="text-center py-10">
+      <div class="inline-block bg-white border-4 border-gray-500 shadow-[4px_4px_0_#888] px-8 py-4 text-left">
+        <h1 class="text-2xl font-bold text-blue-800 border-b-4 border-double border-blue-500 pb-2 text-center">
+          第05講：配列と文字列
+        </h1>
+
+        <p class="mt-3 text-sm text-center font-bold">
+          データの集まりを扱う → 1次元・2次元配列と文字列操作<br />
+          変数の「箱」を連結し、大量のデータを一括管理する重要回。
+        </p>
+
+        <p class="mt-2 blink text-blue-700 font-bold text-center">★ 大量のデータを一網打尽にせよ ★</p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 space-y-10">
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          0. 本講のゴール
+        </h2>
+        <ul class="text-sm list-disc ml-5 space-y-2 mb-8">
+          <li>大量のデータを<strong>「配列」</strong>で一括管理する</li>
+          <li><strong>0番目から始まる</strong>というC++の鉄則を叩き込む</li>
+          <li>文字列（<code>string</code>）を配列のように操作する</li>
+          <li><strong>2次元配列</strong>を使って表やグリッドデータを表現する</li>
+        </ul>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          1. 一次元配列（vector）
+        </h2>
+
+        <p class="text-sm mb-4 font-bold">
+          クラス10人の点数を保存するようなコードを書きたい場合、今までの知識だとどうなるでしょうか？
+        </p>
+
+        <div class="code-container mb-6 opacity-80">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-gray-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">int main(){
+    /* 10人分の変数を確保（大変すぎる…） */
+    int a, b, c, d, e, f, g, h, i, j;
+    a = 60;
+    b = 80;
+    c = 0;
+    // ...
+}</code></pre>
+        </div>
+
+        <p class="text-sm mb-4">
+          1次元配列は、<strong>箱が横に連なっているようなもの</strong>です。intの箱がたくさんある状態を考えてみましょう。
+        </p>
+
+        <img
+          src="./images/hako.png"
+          alt="1次元配列のイメージ"
+          class="retro-img border-2 border-gray-400 shadow-[2px_2px_0_#888]"
+        />
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-8 border-b-2 border-gray-400 pb-1">■ 宣言の仕方と解決策</h3>
+        <div class="code-container mb-6">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    vector&lt;int&gt; test(10); // testが変数にあたる。10個の箱を用意。
+    test[0] = 60;
+    test[1] = 80;
+    test[2] = 0;
+    // ...
+}</code></pre>
+        </div>
+
+        <div class="bg-yellow-50 border-2 border-yellow-500 p-4 text-sm win-panel mb-8">
+          <p class="font-bold text-red-600 mb-2">⚠️ 超重要注意ポイント</p>
+          <ul class="list-disc ml-5 space-y-2">
+            <li>
+              <strong>配列は「0番目」から始まります。</strong><br />最初のうちは1番目と勘違いしてバグらせがちです。
+            </li>
+            <li><strong>存在しない場所を指定するとバグる（エラーで落ちる）。</strong></li>
+          </ul>
+          <div class="code-container mt-3">
+            <button
+              onclick="copyCode(this)"
+              class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-[10px] px-1 py-0 win-panel"
+            >
+              コピー
+            </button>
+            <pre><code class="language-cpp">int main(){
+    vector&lt;int&gt; a(10);
+    cout &lt;&lt; a[10] &lt;&lt; endl; // 配列は 0〜9 しかないのでエラー！
+}</code></pre>
+          </div>
+        </div>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-8 border-b-2 border-gray-400 pb-1">
+          ■ よくある書き方（N個の入力と合計）
+        </h3>
+        <p class="text-sm mb-2 font-bold">競プロで最も頻出する「N個のデータを受け取って合計を求める」テンプレです。</p>
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    int sum = 0;
+    int N;
+    cin &gt;&gt; N;
+    
+    vector&lt;int&gt; a(N);
+    // N個のデータを受け取る
+    for(int i = 0; i &lt; N; i++){
+        cin &gt;&gt; a[i];
+    }
+    
+    // 足し合わせる
+    for(int i = 0; i &lt; N; i++){
+        sum = sum + a[i];
+        // sum += a[i]; でも可
+    }
+    cout &lt;&lt; sum &lt;&lt; endl;
+}</code></pre>
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          2. 文字列（string）
+        </h2>
+
+        <p class="text-sm mb-4">
+          今までは数字のみを扱ってきましたが、ここで文字の集まりである <code>string</code> 型を理解しましょう。<br />
+          実は文字列も、<strong>「文字（char）」が連なった配列のようなもの</strong>です。
+        </p>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-6 border-b-2 border-gray-400 pb-1">■ 宣言と基本的な使い方</h3>
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    string s = "Hello"; // sが変数
+    cout &lt;&lt; s.size() &lt;&lt; endl; // 文字の長さ(5)を出力
+    cout &lt;&lt; s[0] &lt;&lt; endl;     // "Hello"の最初の文字('H')を出力
+}</code></pre>
+        </div>
+
+        <div class="bg-gray-200 border-l-4 border-gray-500 p-3 mb-6 win-panel text-sm">
+          <strong>💡 記号の打ち分け（重要）</strong><br />
+          文字列は <code>""</code>（ダブルクォーテーション）、文字一つは
+          <code>''</code>（シングルクォーテーション）で囲みます。<br />
+          <span class="text-xs text-gray-700"
+            >※JIS配列キーボードなら <code>""</code> = [Shift] + [2]、<code>''</code> = [Shift] + [7] で出せます。</span
+          >
+        </div>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-6 border-b-2 border-gray-400 pb-1">■ 応用例：特定の文字を数える</h3>
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    string s = "C++ is a high-level, general-purpose programming language created by Danish computer scientist Bjarne Stroustrup.";
+    int count = 0;
+    
+    /* sの中に 's' という文字がいくつあるかを数える */
+    for(int i = 0; i &lt; s.size(); i++){
+        if(s[i] == 's'){
+            count++;
+        }
+    }
+    cout &lt;&lt; count &lt;&lt; endl;
+}</code></pre>
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          3. 二次元配列
+        </h2>
+
+        <p class="text-sm mb-4 font-bold">クラス10人の「国・英・数」の点数を保存したい場合。</p>
+
+        <div class="code-container mb-6 opacity-80">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-gray-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">int main(){
+    // 別々に配列を作ると管理が面倒…
+    vector&lt;int&gt; Japanese(10);
+    vector&lt;int&gt; English(10);
+    vector&lt;int&gt; Mathmatics(10);
+}</code></pre>
+        </div>
+
+        <p class="text-sm mb-4 text-blue-800 font-bold">→ 理想は、大きな配列1個の中に、さらに配列を入れる構造です。</p>
+
+        <img
+          src="./images/nizigen.png"
+          alt="2次元配列のイメージ"
+          class="retro-img border-2 border-gray-400 shadow-[2px_2px_0_#888]"
+        />
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-8 border-b-2 border-gray-400 pb-1">■ 二次元配列の書き方</h3>
+        <div class="code-container mb-8">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    /* 3つの大きな箱の中に vector&lt;int&gt;(サイズ10) があるイメージ */
+    vector&lt;vector&lt;int&gt;&gt; test(3, vector&lt;int&gt;(10));
+    
+    /* 出席番号1番（インデックス0）の国語（インデックス0）の成績 */
+    cout &lt;&lt; test[0][0] &lt;&lt; endl;
+    
+    /* 出席番号5番（インデックス4）の数学（インデックス2）の成績 */
+    cout &lt;&lt; test[2][4] &lt;&lt; endl; // 0始まりに注意！
+}</code></pre>
+        </div>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-8 border-b-2 border-gray-400 pb-1">
+          ■ 使用例：九九の表を二次元配列に入れる
+        </h3>
+        <p class="text-sm mb-4 text-red-600 font-bold">
+          ※配列は0から始まるので、1〜9の九九を入れる際も 0〜8 のループで回すのがC++の定石です。
+        </p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    // 9×9 の二次元配列を作成
+    vector&lt;vector&lt;int&gt;&gt; kuku(9, vector&lt;int&gt;(9));
+    
+    // i, j はインデックスとして 0 から 8 まで回す
+    for(int i = 0; i &lt; 9; i++){
+        for(int j = 0; j &lt; 9; j++){
+            // 実際の数字はインデックス+1 なので (i+1) * (j+1)
+            kuku[i][j] = (i + 1) * (j + 1);
+        }
+    }
+}</code></pre>
+        </div>
+      </section>
+
+      <section class="bg-yellow-100 border-4 border-yellow-600 p-6 shadow-[4px_4px_0_#888]">
+        <h2
+          class="font-bold text-xl mb-6 border-b-4 border-double border-yellow-600 pb-2 text-yellow-900 text-center tracking-widest"
+        >
+          💻 ワークショップ
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div class="bg-white border-2 border-gray-400 p-4 shadow-[2px_2px_0_#888] win-panel">
+            <h3 class="font-bold text-yellow-800 border-b border-gray-300 pb-1 mb-2">演習 1</h3>
+            <p class="text-sm font-bold">配列の要素を全部10倍して出力</p>
+            <p class="text-xs text-gray-500 mt-2">ex.) [1,2,3] → [10,20,30]</p>
+          </div>
+          <div class="bg-white border-2 border-gray-400 p-4 shadow-[2px_2px_0_#888] win-panel">
+            <h3 class="font-bold text-yellow-800 border-b border-gray-300 pb-1 mb-2">演習 2</h3>
+            <p class="text-sm font-bold">文字列を反転させる</p>
+            <p class="text-xs text-gray-500 mt-2">ex.) yes → sey<br />level → level<br />Palindrome → emordnilaP</p>
+          </div>
+          <div class="bg-white border-2 border-gray-400 p-4 shadow-[2px_2px_0_#888] win-panel">
+            <h3 class="font-bold text-yellow-800 border-b border-gray-300 pb-1 mb-2">演習 3</h3>
+            <p class="text-sm font-bold">
+              10×10の配列で、<br />i+jが偶数なら 1、<br />奇数なら 0 を格納し、<br />10×10 を出力する
+            </p>
+          </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-6">
+          <div class="flex-1 bg-white border-2 border-gray-500 p-5 shadow-[3px_3px_0_#888] win-panel">
+            <h3 class="font-bold text-lg mb-3 text-blue-900 border-b border-gray-300 pb-1">📚 まとめ</h3>
+            <ul class="text-sm list-disc ml-5 space-y-2">
+              <li><code>vector</code> で大量のデータを一括管理できる</li>
+              <li>配列は常に <strong>「0」</strong> から始まる</li>
+              <li><code>string</code> は文字の配列である</li>
+              <li>2次元配列は <code>vector&lt;vector&lt;int&gt;&gt;</code> で作る</li>
+            </ul>
+          </div>
+          <div class="flex-1 bg-white border-2 border-gray-500 p-5 shadow-[3px_3px_0_#888] win-panel">
+            <h3 class="font-bold text-lg mb-3 text-red-700 border-b border-gray-300 pb-1">🚀 頻出エラー対策</h3>
+            <ul class="text-sm list-decimal ml-5 space-y-2 font-bold text-gray-800">
+              <li>要素数Nの配列の最後のインデックスは <code>N-1</code></li>
+              <li><code>a[N]</code> にアクセスするとバグる</li>
+              <li>2次元配列のインデックスの順番を見失わない</li>
+              <li>文字一つは <code>''</code>、文字列は <code>""</code> で囲む</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="text-center py-10">
+      <div
+        class="inline-block bg-white border-2 border-gray-400 px-6 py-2 shadow-[2px_2px_0_#000] text-sm font-bold text-gray-700 win-panel"
+      >
+        IQ C++ Spring Workshop 2026 - Rep. Takiguchi
+      </div>
+    </footer>
+
+    <script>
+      hljs.highlightAll();
+
+      function copyCode(btn) {
+        const container = btn.closest('.code-container');
+        const code = container.querySelector('code').innerText;
+        navigator.clipboard.writeText(code);
+
+        const originalText = btn.innerText;
+        btn.innerText = '完了！';
+
+        // 色の切り替え（元の色がgrayの場合はgrayに戻す処理を追加）
+        const isGray = btn.classList.contains('bg-gray-600');
+        const defaultBg = isGray ? 'bg-gray-600' : 'bg-blue-600';
+
+        btn.classList.remove(defaultBg);
+        btn.classList.add('bg-green-600');
+
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('bg-green-600');
+          btn.classList.add(defaultBg);
+        }, 1500);
+      }
+    </script>
+  </body>
+</html>
