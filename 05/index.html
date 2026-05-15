@@ -85,7 +85,7 @@
         </h2>
         <ul class="text-sm list-disc ml-5 space-y-2 mb-8">
           <li>大量のデータを<strong>「配列」</strong>で一括管理する</li>
-          <li><strong>0番目から始まる</strong>というC++の鉄則を叩き込む</li>
+          <li><strong>0番目から始まる</strong>という鉄則を叩き込む</li>
           <li>文字列（<code>string</code>）を配列のように操作する</li>
           <li><strong>2次元配列</strong>を使って表やグリッドデータを表現する</li>
         </ul>
@@ -110,9 +110,9 @@
           <pre><code class="language-cpp">int main(){
     /* 10人分の変数を確保（大変すぎる…） */
     int a, b, c, d, e, f, g, h, i, j;
-    a = 60;
-    b = 80;
-    c = 0;
+    a = 4;
+    b = 1;
+    c = 2;
     // ...
 }</code></pre>
         </div>
@@ -122,7 +122,7 @@
         </p>
 
         <img
-          src="./images/hako.png"
+          src="https://eng-entrance.com/wp-content/uploads/2017/01/arrya.png"
           alt="1次元配列のイメージ"
           class="retro-img border-2 border-gray-400 shadow-[2px_2px_0_#888]"
         />
@@ -140,9 +140,9 @@ using namespace std;
 
 int main(){
     vector&lt;int&gt; test(10); // testが変数にあたる。10個の箱を用意。
-    test[0] = 60;
-    test[1] = 80;
-    test[2] = 0;
+    test[0] = 4;
+    test[1] = 1;
+    test[2] = 2;
     // ...
 }</code></pre>
         </div>
@@ -163,8 +163,8 @@ int main(){
               コピー
             </button>
             <pre><code class="language-cpp">int main(){
-    vector&lt;int&gt; a(10);
-    cout &lt;&lt; a[10] &lt;&lt; endl; // 配列は 0〜9 しかないのでエラー！
+    vector&lt;int&gt; a(10);// 10個の箱を宣言
+    cout &lt;&lt; a[10] &lt;&lt; endl; // 配列は 0〜9の10個 しかないので、a[10]は11番目を指すことになりエラー！
 }</code></pre>
           </div>
         </div>
@@ -292,7 +292,7 @@ int main(){
         <p class="text-sm mb-4 text-blue-800 font-bold">→ 理想は、大きな配列1個の中に、さらに配列を入れる構造です。</p>
 
         <img
-          src="./images/nizigen.png"
+          src="https://ysklog.net/wp-content/uploads/20131101-4.png"
           alt="2次元配列のイメージ"
           class="retro-img border-2 border-gray-400 shadow-[2px_2px_0_#888]"
         />
