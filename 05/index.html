@@ -203,73 +203,9 @@ int main(){
 }</code></pre>
         </div>
       </section>
-
       <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
         <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
-          2. 文字列（string）
-        </h2>
-
-        <p class="text-sm mb-4">
-          今までは数字のみを扱ってきましたが、ここで文字の集まりである <code>string</code> 型を理解しましょう。<br />
-          実は文字列も、<strong>「文字（char）」が連なった配列のようなもの</strong>です。
-        </p>
-
-        <h3 class="font-bold text-blue-800 mb-2 mt-6 border-b-2 border-gray-400 pb-1">■ 宣言と基本的な使い方</h3>
-        <div class="code-container mb-4">
-          <button
-            onclick="copyCode(this)"
-            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
-          >
-            コピー
-          </button>
-          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
-using namespace std;
-
-int main(){
-    string s = "Hello"; // sが変数
-    cout &lt;&lt; s.size() &lt;&lt; endl; // 文字の長さ(5)を出力
-    cout &lt;&lt; s[0] &lt;&lt; endl;     // "Hello"の最初の文字('H')を出力
-}</code></pre>
-        </div>
-
-        <div class="bg-gray-200 border-l-4 border-gray-500 p-3 mb-6 win-panel text-sm">
-          <strong>💡 記号の打ち分け（重要）</strong><br />
-          文字列は <code>""</code>（ダブルクォーテーション）、文字一つは
-          <code>''</code>（シングルクォーテーション）で囲みます。<br />
-          <span class="text-xs text-gray-700"
-            >※JIS配列キーボードなら <code>""</code> = [Shift] + [2]、<code>''</code> = [Shift] + [7] で出せます。</span
-          >
-        </div>
-
-        <h3 class="font-bold text-blue-800 mb-2 mt-6 border-b-2 border-gray-400 pb-1">■ 応用例：特定の文字を数える</h3>
-        <div class="code-container mb-4">
-          <button
-            onclick="copyCode(this)"
-            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
-          >
-            コピー
-          </button>
-          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
-using namespace std;
-
-int main(){
-    string s = "C++ is a high-level, general-purpose programming language created by Danish computer scientist Bjarne Stroustrup.";
-    int count = 0;
-    
-    /* sの中に 's' という文字がいくつあるかを数える */
-    for(int i = 0; i &lt; s.size(); i++){
-        if(s[i] == 's'){
-            count++;
-        }
-    }
-    cout &lt;&lt; count &lt;&lt; endl;
-}</code></pre>
-        </div>
-      </section>
-
-      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
-        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
-          3. 二次元配列
+          2. 二次元配列
         </h2>
 
         <p class="text-sm mb-4 font-bold">クラス10人の「国・英・数」の点数を保存したい場合。</p>
@@ -351,6 +287,217 @@ int main(){
 }</code></pre>
         </div>
       </section>
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          5. 文字（char）と ASCII コード
+        </h2>
+
+        <p class="text-sm mb-4">
+          プログラミングは数値だけではなく、文字を扱うことができます。<br />文字ひとつだけ扱う
+          <code>char</code>（文字）型です。
+          コンピュータの内部では、文字はすべて<strong>「数値」</strong>として管理されています。
+        </p>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-6 border-b-2 border-gray-400 pb-1">■ 宣言と基本的な使い方</h3>
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    char c = 'a'; // 文字はシングルクォーテーション '' で囲む
+    cout &lt;&lt; c &lt;&lt; endl; // 'a' が出力される
+}</code></pre>
+        </div>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-6 border-b-2 border-gray-400 pb-1">
+          ■ 文字の正体：ASCII（アスキー）コード
+        </h3>
+        <p class="text-sm mb-3">
+          C++において、<code>char</code> 型は内部的にはただの<strong>整数</strong>です。文字と数字の対応表を
+          <strong>ASCII コード</strong> と呼びます。
+        </p>
+
+        <div class="mb-4 overflow-x-auto">
+          <table class="min-w-full text-xs text-center border-collapse border border-gray-400">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="border border-gray-400 p-1">文字</th>
+                <td class="border border-gray-400 p-1 font-mono">'A'</td>
+                <td class="border border-gray-400 p-1 font-mono">'B'</td>
+                <td class="border border-gray-400 p-1 font-mono">...</td>
+                <td class="border border-gray-400 p-1 font-mono">'Z'</td>
+                <td class="border border-gray-400 p-1 font-mono">'a'</td>
+                <td class="border border-gray-400 p-1 font-mono">'b'</td>
+                <td class="border border-gray-400 p-1 font-mono">...</td>
+                <td class="border border-gray-400 p-1 font-mono">'z'</td>
+                <td class="border border-gray-400 p-1 font-mono">'0'</td>
+                <td class="border border-gray-400 p-1 font-mono">'1'</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th class="border border-gray-400 p-1 bg-gray-50">ASCII値</th>
+                <td class="border border-gray-400 p-1 font-mono">65</td>
+                <td class="border border-gray-400 p-1 font-mono">66</td>
+                <td class="border border-gray-400 p-1 font-mono">...</td>
+                <td class="border border-gray-400 p-1 font-mono">90</td>
+                <td class="border border-gray-400 p-1 font-mono">97</td>
+                <td class="border border-gray-400 p-1 font-mono">98</td>
+                <td class="border border-gray-400 p-1 font-mono">...</td>
+                <td class="border border-gray-400 p-1 font-mono">122</td>
+                <td class="border border-gray-400 p-1 font-mono">48</td>
+                <td class="border border-gray-400 p-1 font-mono">49</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="text-sm mb-4">
+          アルファベットや数字は、表の中で<strong>必ず連続して並んでいる</strong>のが重要なポイントです。
+        </p>
+
+        <div class="bg-gray-200 border-l-4 border-gray-500 p-3 mb-6 win-panel text-sm">
+          <strong>💡 確かめてみよう（型キャスト）</strong><br />
+          <code>char</code> 型の変数の前に <code>(int)</code> と書くと、その文字の ASCII
+          コード（数字）を覗き見ることができます。
+          <pre class="bg-gray-800 text-green-400 p-2 mt-2 font-mono text-xs rounded">
+cout &lt;&lt; (int)'a' &lt;&lt; endl; // 97 と出力される</pre
+          >
+        </div>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-6 border-b-2 border-gray-400 pb-1">
+          ■ 競プロ応用①：'c' - 'a' で「何番目のアルファベットか」を求める
+        </h3>
+        <p class="text-sm mb-4">
+          文字同士で引き算をすると、<strong>ASCIIコードの差（引き算）</strong>が計算されます。<br />
+          これを利用すると、<code>'a'</code>
+          を基準（0番目）として、その文字がアルファベットの何番目かを一発で割り出せます。バケット（出現回数を数える配列）の実装で必須のテクニックです。
+        </p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    char c = 'f';
+    
+    // 'f' が 'a' から数えて何番目か（0始まり）
+    int index = c - 'a'; 
+    
+    cout &lt;&lt; index &lt;&lt; endl; // 5 が出力される ('a'=0, 'b'=1, 'c'=2, 'd'=3, 'e'=4, 'f'=5)
+}</code></pre>
+        </div>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-6 border-b-2 border-gray-400 pb-1">
+          ■ 競プロ応用②：小文字 ⇔ 大文字の変換
+        </h3>
+        <p class="text-sm mb-4">
+          ASCII 表を見ると、大文字の <code>'A'</code>(65) と小文字の <code>'a'</code>(97) の距離は
+          <code>32</code> 離れています。すべてのアルファベットでこの差は共通です。<br />
+          そのため、<strong>「小文字から <code>'a'</code> を引いて <code>'A'</code> を足す」</strong
+          >ことで、大文字へ変換できます（逆も然り）。
+        </p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    char lowercase = 'm';
+    
+    // 小文字から大文字に変換
+    char uppercase = lowercase - 'a' + 'A';
+    
+    cout &lt;&lt; uppercase &lt;&lt; endl; // 'M' が出力される
+    
+    // 【参考】数字の文字 '7' を、純粋な数値の 7 に変換する場合も同様
+    char num_char = '7';
+    int num = num_char - '0';
+    cout &lt;&lt; num &lt;&lt; endl; // 数値の 7 が出力される
+}</code></pre>
+        </div>
+      </section>
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          4. 文字列（string）
+        </h2>
+
+        <p class="text-sm mb-4">
+          ここで文字の集まりである <code>string</code> 型を理解しましょう。<br />
+          実は文字列も、<strong>「文字（char）」が連なった配列のようなもの</strong>です。
+        </p>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-6 border-b-2 border-gray-400 pb-1">■ 宣言と基本的な使い方</h3>
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    string s = "Hello"; // sが変数
+    cout &lt;&lt; s.size() &lt;&lt; endl; // 文字の長さ(5)を出力
+    cout &lt;&lt; s[0] &lt;&lt; endl;     // "Hello"の最初の文字('H')を出力
+}</code></pre>
+        </div>
+
+        <div class="bg-gray-200 border-l-4 border-gray-500 p-3 mb-6 win-panel text-sm">
+          <strong>💡 記号の打ち分け（重要）</strong><br />
+          文字列は <code>""</code>（ダブルクォーテーション）、文字一つは
+          <code>''</code>（シングルクォーテーション）で囲みます。<br />
+          <span class="text-xs text-gray-700"
+            >※JIS配列キーボードなら <code>""</code> = [Shift] + [2]、<code>''</code> = [Shift] + [7] で出せます。</span
+          >
+        </div>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-6 border-b-2 border-gray-400 pb-1">■ 応用例：特定の文字を数える</h3>
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main(){
+    string s = "C++ is a high-level, general-purpose programming language created by Danish computer scientist Bjarne Stroustrup.";
+    int count = 0;
+    
+    /* sの中に 's' という文字がいくつあるかを数える */
+    for(int i = 0; i &lt; s.size(); i++){
+        if(s[i] == 's'){
+            count++;
+        }
+    }
+    cout &lt;&lt; count &lt;&lt; endl;
+}</code></pre>
+        </div>
+      </section>
+
       <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6">
         <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
           ばちゃこんにチャレンジ
