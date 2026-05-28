@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>補足講義：キャスト（型変換） | IQ C++講習会</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+
+    <style>
+      body {
+        background-color: #c0c0c0;
+        font-family: 'MS PGothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .blink {
+        animation: blink 1s infinite;
+      }
+      .win-panel {
+        border: 2px solid;
+        border-color: #ffffff #808080 #808080 #ffffff;
+      }
+      pre {
+        background: #ffffff !important;
+        border: 2px solid #808080 !important;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        border-radius: 0px; /* レトロ感を出すため角丸排除 */
+        margin: 0.5rem 0 !important;
+        padding: 1rem !important;
+        overflow-x: auto;
+      }
+      code.hljs {
+        background: transparent !important;
+        font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace !important;
+        font-size: 0.9rem !important;
+        padding: 0 !important;
+        color: #000000;
+      }
+      .code-container {
+        position: relative;
+        height: 100%;
+      }
+      .code-container pre {
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body class="text-black pb-10">
+    <header class="text-center py-10">
+      <div class="inline-block bg-white border-4 border-gray-500 shadow-[4px_4px_0_#888] px-8 py-4 text-left">
+        <h1 class="text-2xl font-bold text-blue-800 border-b-4 border-double border-blue-500 pb-2 text-center">
+          補足講義：キャスト（型変換）
+        </h1>
+
+        <p class="mt-3 text-sm text-center font-bold">
+          変数の「データ型」を一時的にチェンジするテクニック<br />
+          ASCIIコードの解読から、競プロで必須の計算処理までを一挙に解説。
+        </p>
+
+        <p class="mt-2 blink text-blue-700 font-bold text-center">★ データの姿を自在に変幻自在に変えよう ★</p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 space-y-10">
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          0. キャストのゴール
+        </h2>
+        <ul class="text-sm list-disc ml-5 space-y-2 mb-4">
+          <li>変数の型を一時的に変換する<strong>「キャスト」</strong>の書き方を覚える</li>
+          <li><code>char</code> 型と <code>int</code> 型を相互に変換し、ASCIIコードを自由に扱う</li>
+          <li>整数同士の割り算で<strong>小数（実数）の計算結果</strong>を正しく導く</li>
+          <li>
+            <code>double</code> 型から <code>int</code> 型への変換による<strong>切り捨て処理</strong>をマスターする
+          </li>
+        </ul>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          1. キャスト（型変換）とは？
+        </h2>
+
+        <p class="text-sm mb-4">
+          プログラミングにおいて、変数の種類（データ型）を一時的に別の種類へと変身させることを
+          <strong>キャスト（型変換）</strong> と呼びます。<br />
+          C++では、変身させたい変数や値の前に <code>(変身後の型名)</code> と書くことで強制的に型を変えられます。
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div class="bg-gray-100 border-2 border-gray-400 p-3 text-sm">
+            <strong class="text-blue-800">① 安全な変換（データの拡大）</strong>
+            <p class="text-xs text-gray-600 mt-1">
+              <code>char ➔ int</code>
+              など、小さな箱（1バイト）から大きな箱（4バイト）へデータを移す変換。データが破損する心配はありません。
+            </p>
+          </div>
+          <div class="bg-gray-100 border-2 border-gray-400 p-3 text-sm">
+            <strong class="text-red-800">② 情報が消える変換（データの縮小）</strong>
+            <p class="text-xs text-gray-600 mt-1">
+              <code>double ➔ int</code>
+              など、小数点以下を<strong>強制的に切り捨てる</strong>変換。あえて端数を消し去りたい時に重宝します。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          2. 文字（char）と数値（int）の相互キャスト
+        </h2>
+
+        <p class="text-sm mb-4 font-bold">
+          前項の「ASCIIコード」の正体を、このキャスト機能を使って覗き見してみましょう。
+        </p>
+
+        <div class="code-container mb-6">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    // 【文字 ➔ 数値】 'a' の前に (int) をつけると、ASCIIコードが出力される
+    cout &lt;&lt; (int)'a' &lt;&lt; endl;  // 97 と出力される
+
+    // 【数値 ➔ 文字】 97 の前に (char) をつけると、対応する文字が出現する
+    cout &lt;&lt; (char)97 &lt;&lt; endl;  // 'a' と出力される
+}</code></pre>
+        </div>
+
+        <p class="text-sm mb-4">
+          このように、コンピュータ内部にある「背番号（整数）」をそのまま数値として見たいなら
+          <code>(int)</code> を、数値に対応した「見た目の文字」に戻したいなら
+          <code>(char) </code>を被せるだけで簡単に変換が可能です。
+        </p>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          3. 競プロ実戦でのキャスト（計算の罠を回避する）
+        </h2>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-4 border-b-2 border-gray-400 pb-1">■ 罠：整数同士の割り算</h3>
+        <p class="text-sm mb-4">
+          C++では、<strong>整数（int）同士の割り算の答えは必ず整数（int）</strong>になる仕様があります。端数はすべて切り捨てられます。<br />
+          5 割る 2 の答えとして <code>2.5</code> が欲しいのに、そのまま計算すると
+          <code>2</code> に化けて大バグの原因になります。
+        </p>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-6 border-b-2 border-gray-400 pb-1">
+          ■ 解決策：計算する瞬間に double へキャストする
+        </h3>
+        <p class="text-sm mb-2 font-bold">
+          割り算を行う際に、どちらか片方だけでも
+          <code>(double)</code> にキャストすると、計算結果も小数になってくれます。
+        </p>
+
+        <div class="code-container mb-6">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    int a = 5;
+    int b = 2;
+
+    // ダメな例：int同士なので小数点以下が消滅する
+    cout &lt;&lt; a / b &lt;&lt; endl;         // 2 と出力（大バグ）
+
+    // 正しい例：片方を double 型にキャストして計算させる
+    cout &lt;&lt; (double)a / b &lt;&lt; endl; // 2.5 と出力（大成功！）
+    
+    // 【補足】実数から整数にして、あえて小数点以下をバッサリ切り捨てたい時
+    double pi = 3.141592;
+    cout &lt;&lt; (int)pi &lt;&lt; endl;       // 3 と出力
+}</code></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="text-center py-10">
+      <div
+        class="inline-block bg-white border-2 border-gray-400 px-6 py-2 shadow-[2px_2px_0_#000] text-sm font-bold text-gray-700 win-panel"
+      >
+        IQ C++ Spring Workshop 2026 - Rep. Takiguchi
+      </div>
+    </footer>
+
+    <script>
+      hljs.highlightAll();
+
+      function copyCode(btn) {
+        const container = btn.closest('.code-container');
+        const code = container.querySelector('code').innerText;
+        navigator.clipboard.writeText(code);
+
+        const originalText = btn.innerText;
+        btn.innerText = '完了！';
+
+        const isGray = btn.classList.contains('bg-gray-600');
+        const defaultBg = isGray ? 'bg-gray-600' : 'bg-blue-600';
+
+        btn.classList.remove(defaultBg);
+        btn.classList.add('bg-green-600');
+
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('bg-green-600');
+          btn.classList.add(defaultBg);
+        }, 1500);
+      }
+    </script>
+  </body>
+</html>

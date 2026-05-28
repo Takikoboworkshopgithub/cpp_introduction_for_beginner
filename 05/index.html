@@ -289,7 +289,7 @@ int main(){
       </section>
       <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
         <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
-          5. 文字（char）と ASCII コード
+          3. 文字（char）と ASCII コード
         </h2>
 
         <p class="text-sm mb-4">
@@ -358,19 +358,72 @@ int main(){
           </table>
         </div>
 
-        <p class="text-sm mb-4">
-          アルファベットや数字は、表の中で<strong>必ず連続して並んでいる</strong>のが重要なポイントです。
-        </p>
-
-        <div class="bg-gray-200 border-l-4 border-gray-500 p-3 mb-6 win-panel text-sm">
-          <strong>💡 確かめてみよう（型キャスト）</strong><br />
-          <code>char</code> 型の変数の前に <code>(int)</code> と書くと、その文字の ASCII
-          コード（数字）を覗き見ることができます。
-          <pre class="bg-gray-800 text-green-400 p-2 mt-2 font-mono text-xs rounded">
-cout &lt;&lt; (int)'a' &lt;&lt; endl; // 97 と出力される</pre
-          >
+        <div class="bg-blue-50 border-2 border-blue-400 p-4 mb-6 win-panel text-sm">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <strong class="text-blue-900">💡 連続性のひみつと「変身魔法」</strong><br />
+              アルファベットや数字は、表の中で<strong>必ず連続して並んでいる</strong>のが重要なポイントです。<br />
+              C++では、この特徴と変数の型を一時的にチェンジする技能を組み合わせることで、文字を自在に操ることができます。
+            </div>
+            <a
+              href="./cast.html"
+              class="whitespace-nowrap bg-white text-blue-800 font-bold px-3 py-1.5 border-2 border-blue-800 shadow-[2px_2px_0_#1e40af] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition win-panel text-xs"
+            >
+              型キャスト（型変換）の解説 ➔
+            </a>
+          </div>
         </div>
 
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    // 【文字 ➔ 数値】 'a' の背番号（ASCIIコード）を覗く
+    cout &lt;&lt; (int)'a' &lt;&lt; endl;  // 97 と出力される
+
+    // 【数値 ➔ 文字】 背番号 97 の文字を呼び出す
+    cout &lt;&lt; (char)97 &lt;&lt; endl;  // 'a' と出力される
+}</code></pre>
+        </div>
+        <h3 class="font-bold text-blue-800 mb-2 mt-6 border-b-2 border-gray-400 pb-1">
+          ■ 実験：数値と文字を対応させてみよう
+        </h3>
+        <p class="text-sm mb-4">
+          <code>for</code> ループを使って、1番から122番までの数値に対応する文字を順番に出力してみましょう。<br />
+          <code>(char)i</code> と書くことで、整数を文字に変換（キャスト）して表示できます。
+        </p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    cout &lt;&lt; "数値 : 文字" &lt;&lt; endl;
+    cout &lt;&lt; "----------------" &lt;&lt; endl;
+
+    // 0〜31は画面に表示できない制御文字（改行など）が多い。
+    // 実用的な文字が始まる32番から122番までを出力します
+    for (int i = 0; i &lt;= 122; i++) {
+        // 数値 i を char 型に変換
+        char c = (char)i; 
+        
+        cout &lt;&lt; i &lt;&lt; " : " &lt;&lt; c &lt;&lt; endl;
+    }
+}</code></pre>
+        </div>
         <h3 class="font-bold text-blue-800 mb-2 mt-6 border-b-2 border-gray-400 pb-1">
           ■ 競プロ応用①：'c' - 'a' で「何番目のアルファベットか」を求める
         </h3>
