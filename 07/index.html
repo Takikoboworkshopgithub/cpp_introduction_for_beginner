@@ -108,16 +108,43 @@
           >
             コピー
           </button>
-          <pre><code class="language-cpp">set&lt;int&gt; s;
-s.insert(100);
-s.insert(50);
-s.insert(100); // 重複は自動で消える
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
 
-cout << "要素数: " << s.size() << endl; // 2
+int main() {
+    set&lt;int&gt; s;
 
-// 特定の値があるか検索（爆速：O(log N)）
-if (s.count(50)) {
-    cout << "50は存在します" << endl;
+    s.insert(100); // {100}
+
+    s.insert(50);  // {50, 100}
+
+    s.insert(100); // {50, 100}
+                   // 重複は自動で無視される
+
+    cout &lt;&lt; "要素数: " &lt;&lt; s.size() &lt;&lt; endl; // 2
+
+    // 特定の値があるか検索(たくさん要素があっても高速で探してくれる)
+    if (s.count(50)) {
+        cout &lt;&lt; "50は存在します" &lt;&lt; endl;
+    }
+
+    // 要素を削除
+    s.erase(50); // {100}
+
+    // setは自動で昇順ソートされる
+    s.insert(30);  // {30, 100}
+
+    s.insert(200); // {30, 100, 200}
+
+    s.insert(10);  // {10, 30, 100, 200}
+
+    cout &lt;&lt; "setの中身: ";
+    //デバッグなどで出力する際にはこうすると便利。拡張for文といいます
+    for (int x : s) {
+        cout &lt;&lt; x &lt;&lt; " ";
+    }
+
+    cout &lt;&lt; endl;
 }</code></pre>
         </div>
       </section>
@@ -135,14 +162,65 @@ if (s.count(50)) {
           >
             コピー
           </button>
-          <pre><code class="language-cpp">map&lt;string, int&gt; inventory;
-inventory["Apple"] = 3;
-inventory["Banana"] = 10;
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
 
-// 加算も自由自在
-inventory["Apple"] += 5;
+int main() {
+    map&lt;string, int&gt; mp;
 
-cout << "Appleの在庫: " << inventory["Apple"] << endl; // 8</code></pre>
+    // 値を追加
+    mp["Apple"] = 3;
+    // {"Apple": 3}
+
+    mp["Banana"] = 10;
+    // {"Apple": 3, "Banana": 10}
+
+    mp["Orange"] = 7;
+    // {"Apple": 3, "Banana": 10, "Orange": 7}
+
+    // 値を加算
+    mp["Apple"] += 5;
+    // {"Apple": 8, "Banana": 10, "Orange": 7}
+
+    // 要素数を取得
+    cout &lt;&lt; "要素数: "
+         &lt;&lt; mp.size()
+         &lt;&lt; endl;
+
+    // 値を取得
+    cout &lt;&lt; "Appleの在庫: "
+         &lt;&lt; mp["Apple"]
+         &lt;&lt; endl;
+
+    cout &lt;&lt; "Bananaの在庫: "
+         &lt;&lt; mp["Banana"]
+         &lt;&lt; endl;
+
+    // キーが存在するか確認
+    if (mp.count("Orange")) {
+        cout &lt;&lt; "Orangeは存在します"
+             &lt;&lt; endl;
+    }
+
+    // 要素を削除
+    mp.erase("Banana");
+    // {"Apple": 8, "Orange": 7}
+
+    cout &lt;&lt; "削除後の要素数: "
+         &lt;&lt; mp.size()
+         &lt;&lt; endl;
+
+    // mapの中身を全部表示
+    cout &lt;&lt; "--- mp ---"
+         &lt;&lt; endl;
+
+    for (auto p : mp) {
+        cout &lt;&lt; p.first
+             &lt;&lt; " : "
+             &lt;&lt; p.second
+             &lt;&lt; endl;
+    }
+}</code></pre>
         </div>
       </section>
 
@@ -181,6 +259,19 @@ while(!q.empty()){
           <strong>実用例：</strong> 迷路の最短経路を解く「幅優先探索（BFS）」では、この
           <code>queue</code> を使って「今いる場所から1歩で行ける場所」を順番に管理します。
         </p>
+        <div class="bg-gray-200 border-2 border-gray-500 p-3 shadow-[2px_2px_0_#888] mb-6">
+          <p class="text-xs font-bold mb-2 text-blue-900">▼ queue の動き（FIFO）</p>
+
+          <div class="aspect-video border-2 border-black bg-black">
+            <iframe
+              class="w-full h-full"
+              src="https://www.youtube.com/embed/2hpAW8G6Gbc"
+              title="queue animation"
+              frameborder="0"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
       </section>
 
       <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
@@ -221,6 +312,19 @@ while(!st.empty()){
           <strong>実用例：</strong>
           プログラムの関数呼び出しの管理や、カッコの対応関係のチェック、迷路を奥深く突き進む「深さ優先探索（DFS）」などで活躍します。
         </p>
+        <div class="bg-gray-200 border-2 border-gray-500 p-3 shadow-[2px_2px_0_#888] mb-6">
+          <p class="text-xs font-bold mb-2 text-blue-900">▼ stack の動き（LIFO）</p>
+
+          <div class="aspect-video border-2 border-black bg-black">
+            <iframe
+              class="w-full h-full"
+              src="https://www.youtube.com/embed/Wy5hZI1P2x8"
+              title="stack animation"
+              frameborder="0"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
       </section>
       <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6">
         <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
