@@ -172,9 +172,10 @@ cout << p.second << endl; // 2つ目の値: 100
 vector&lt;pair&lt;int, int&gt;&gt; points;
 points.push_back({10, 20});
 points.push_back({5, 30});
+points.push_back({10, 10});
 
-// pairのvectorをソートすると、まず first で比較、同じなら second で比較される！
-sort(points.begin(), points.end());</code></pre>
+// pairのvectorをソートすると、まず 最初の要素 で比較、同じなら 次の要素 で比較される！
+sort(points.begin(), points.end());// {{5, 30}, {10, 10}, {10, 20}}</code></pre>
         </div>
       </section>
 
