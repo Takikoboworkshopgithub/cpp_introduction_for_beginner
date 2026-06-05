@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第08講：モダン文法と構造体 | IQ C++講習会</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+
+    <style>
+      body {
+        background-color: #c0c0c0;
+        font-family: 'MS PGothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .blink {
+        animation: blink 1s infinite;
+      }
+      .win-panel {
+        border: 2px solid;
+        border-color: #ffffff #808080 #808080 #ffffff;
+      }
+      pre {
+        background: #ffffff !important;
+        border: 2px solid #808080 !important;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        border-radius: 0px;
+        margin: 0.5rem 0 !important;
+        padding: 1rem !important;
+        overflow-x: auto;
+      }
+      code.hljs {
+        font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace !important;
+        font-size: 0.9rem !important;
+        padding: 0 !important;
+        color: #000000;
+      }
+      .code-container {
+        position: relative;
+        height: 100%;
+      }
+      .memo-box {
+        background-color: #ffffe1;
+        border: 1px solid #000;
+        padding: 10px;
+        box-shadow: 2px 2px 0px #888;
+      }
+    </style>
+  </head>
+
+  <body class="text-black pb-10">
+    <header class="text-center py-10">
+      <div class="inline-block bg-white border-4 border-gray-500 shadow-[4px_4px_0_#888] px-8 py-4 text-left">
+        <h1 class="text-2xl font-bold text-blue-800 border-b-4 border-double border-blue-500 pb-2 text-center">
+          第08講：モダン文法と構造体
+        </h1>
+        <p class="mt-3 text-sm text-center font-bold">
+          C++をもっと楽に、もっとスマートに書く技術。<br />
+          バラバラのデータを「構造体」で制圧せよ！
+        </p>
+        <p class="mt-2 blink text-blue-700 font-bold text-center">★ 基礎編の総仕上げ！バグのないコードを目指せ ★</p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 space-y-10">
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          1. 型推論の魔法：auto
+        </h2>
+        <p class="text-sm mb-4">
+          これまで <code>int</code> や
+          <code>string</code> など、変数には必ず「型」を指定してきました。しかし、モダンなC++には<strong
+            >右辺の値から型を自動で推測してくれる</strong
+          >
+          <code>auto</code> という魔法のキーワードがあります。
+        </p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    auto a = 10;       // 勝手に int だと判断してくれる！
+    auto b = 3.14;     // 勝手に double だと判断！
+    auto c = "hello";  // 文字列もOK
+
+    cout &lt;&lt; a &lt;&lt; " " &lt;&lt; b &lt;&lt; endl;
+}</code></pre>
+        </div>
+        <p class="text-xs text-gray-700 bg-gray-100 p-2 border border-gray-300">
+          <strong>※注意：</strong>
+          便利ですが、最初は「後で紹介するある技術」と組み合わせる時だけ使うのがおすすめです。その威力を次で見てみましょう！
+        </p>
+      </section>
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          2. 拡張for文（スマートなループ）
+        </h2>
+        <p class="text-sm mb-4">配列の中身をすべて出力したい時、今まで私たちはこう書いていました。</p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">vector&lt;int&gt; A = {10, 20, 30, 40};
+
+// 今までの書き方（iの範囲を間違えやすい…）
+for (int i = 0; i &lt; A.size(); i++) {
+    cout &lt;&lt; A[i] &lt;&lt; " ";
+}</code></pre>
+        </div>
+
+        <p class="text-sm mb-4 mt-6">これを圧倒的に見やすく、書きやすくしたのが<strong>「拡張for文」</strong>です。</p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">vector&lt;int&gt; A = {10, 20, 30, 40};
+
+// 拡張for文！ Aの中身を順番に x に取り出してループする
+for (int x : A) {
+    cout &lt;&lt; x &lt;&lt; " ";
+}</code></pre>
+        </div>
+
+        <p class="text-sm mb-4 mt-6">
+          さらに、ここで先ほどの <code>auto</code> が合体すると<strong>最強の書き方</strong>になります。
+        </p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">// 型が何であれ、勝手に推論して回してくれる！
+for (auto x : A) {
+    cout &lt;&lt; x &lt;&lt; " ";
+}</code></pre>
+        </div>
+
+
+          <p class="text-xs text-blue-900 mt-2">
+            これなら <code>first</code> や
+            <code>second</code>
+            の打ち間違えでバグらせる心配も一切ありません。競技プログラミングでも必須の超便利テクニックです！
+          </p>
+        </div>
+
+        <div class="bg-blue-50 border-2 border-blue-400 p-4 mt-6 shadow-[2px_2px_0_#888]">
+          <h3 class="text-sm font-bold text-blue-950 mb-2">💡 なぜ拡張for文で auto を使うの？</h3>
+          <p class="text-xs mb-3 leading-relaxed">
+            「<code>int</code> くらい自分で書くよ」と思うかもしれません。では、第06講でやった
+            <strong>pair型（座標のリストなど）</strong> をループで回す場合を比較してみましょう。
+          </p>
+
+          <div class="code-container mb-2">
+            <pre><code class="language-cpp">// 座標のリスト {x, y}
+vector&lt;pair&lt;int, int&gt;&gt; points = {{1, 2}, {3, 4}, {5, 6}};
+
+// 【auto なし】型名が長すぎて打ち間違えるし、読むのもウッとなる…
+for (pair&lt;int, int&gt; p : points) {
+    cout &lt;&lt; p.first &lt;&lt; " " &lt;&lt; p.second &lt;&lt; endl;
+}
+
+// 【auto あり】どんなに複雑な型でも、たった4文字でスマートに解決！
+for (auto p : points) {
+    cout &lt;&lt; p.first &lt;&lt; " " &lt;&lt; p.second &lt;&lt; endl;
+}</code></pre>
+          </div>
+          <p class="text-xs text-blue-900 mt-2">
+            このように、拡張for文と
+            <code>auto</code> のコンボは、複雑なデータ構造になればなるほど圧倒的な威力を発揮します！
+          </p>
+        </div>
+        <div class="bg-blue-50 border-2 border-blue-400 p-4 mt-4 shadow-[2px_2px_0_#888]">
+          <h3 class="text-sm font-bold text-blue-950 mb-2">🚀 さらにモダンに！「構造化束縛」（C++17）</h3>
+          <p class="text-xs mb-3 leading-relaxed">
+            先ほどの <code>pair</code> 型のループ、<code>p.first</code> や
+            <code>p.second</code> と書くのは少し面倒ですし、どっちがどっちか分かりにくかったですよね。<br />
+            モダンなC++では、なんと<strong>中身をその場でバラして別々の変数に一発で代入する</strong>強力な書き方があります！
+          </p>
+
+          <div class="code-container mb-2">
+            <button
+              onclick="copyCode(this)"
+              class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+            >
+              コピー
+            </button>
+            <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    // 座標のリスト {x, y}
+    vector&lt;pair&lt;int, int&gt;&gt; points = {{1, 2}, {3, 4}, {5, 6}};
+
+    // 拡張for文の中で [x, y] のように書くと、勝手に分解してくれる！
+    for (auto [x, y] : points) {
+        cout &lt;&lt; "X座標: " &lt;&lt; x &lt;&lt; ", Y座標: " &lt;&lt; y &lt;&lt; endl;
+    }
+}</code></pre>
+          </div>
+          <p class="text-xs text-blue-900 mt-2">
+            これなら <code>first</code> や <code>second</code> の打ち間違えでバグらせる心配も一切ありません。<br />
+            コードが圧倒的に直感的で読みやすくなるため、競技プログラミングでも必須の超便利テクニックです！
+          </p>
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          3. データを直感的に束ねる：構造体（struct）
+        </h2>
+        <p class="text-sm mb-4">
+          生徒の「国語」「英語」「数学」の点数をまとめて管理するプログラムを想像してください。
+          これまで通りに変数を別々に作ると、管理が非常に面倒になります。
+        </p>
+
+        <div class="code-container mb-4">
+          <pre><code class="language-cpp">// 変数を別々に作ると、誰のデータか分からなくなりがち…
+int japanese;
+int english;
+int math;</code></pre>
+        </div>
+
+        <p class="text-sm mb-4 mt-6">
+          これを美しく解決するのが<strong>「構造体（struct）」</strong>です。複数の異なるデータを1つにまとめた「新しいデータ型」を自分で作ることができます。
+        </p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+// 成績をまとめた「Score」という新しい型を自分で作る！
+struct Score {
+    int japanese;
+    int english;
+    int math;
+}; // ← 最後にセミコロン「;」が必要な点に注意！
+
+int main() {
+    // Score型の変数「p」を作る
+    Score p;
+
+    // ドット「.」を使って、中身に直感的にアクセスできる！
+    p.japanese = 80;
+    p.english = 90;
+    p.math = 100;
+
+    cout &lt;&lt; "数学の点数: " &lt;&lt; p.math &lt;&lt; "点" &lt;&lt; endl;
+}</code></pre>
+        </div>
+
+        <p class="text-sm mb-4 mt-6">
+          1人分のまとめ方は分かりました。では、**「生徒10人分」**のデータを管理したい時はどうすればいいでしょうか？
+          さきほど作った `Score` 型を、そのまま <code>vector</code> の配列にしてしまえば解決します！
+        </p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">    // Score型が入る、サイズ10の配列「students」を作る
+    vector&lt;Score&gt; students(10);
+
+    // 出席番号5番（インデックス4）の生徒の成績を入力
+    students[4].japanese = 80;
+    students[4].english = 90;
+    students[4].math = 100;
+
+    // 全員の数学の点数を出すなら、先ほどの auto × 拡張for文が大活躍！
+    for (auto s : students) {
+        cout &lt;&ll; s.math &lt;&lt; " ";
+    }</code></pre>
+        </div>
+
+        <p class="text-sm mb-4 mt-6">
+          もし、これと同じ「10人分の3教科のデータ」を、構造体を使わずに1つの配列で管理しようとすると、以下のような<strong>「2次元配列」</strong>を使うしかありませんでした。
+        </p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">    /* 3つの大きな箱(国/英/数)の中に サイズ10の配列 があるイメージ */
+    vector&lt;vector&lt;int&gt;&gt; test(3, vector&lt;int&gt;(10));
+    
+    /* 出席番号5番（インデックス4）の数学（インデックス2）の成績を表示 */
+    cout &lt;&lt; test[2][4] &lt;&lt; endl;</code></pre>
+        </div>
+
+        <div class="memo-box mt-6 text-center">
+          <p class="font-bold text-sm text-red-600">比較してみましょう！</p>
+          <p class="text-xs font-mono mt-2 bg-white p-2 border border-gray-300 inline-block text-left">
+            ❌ 2次元配列：
+            <span class="text-red-600 font-bold">test[2][4]</span> （2って何番だっけ？と頭が混乱する）<br />
+            ⭕ 構造体の配列：
+            <span class="text-green-600 font-bold">students[4].math</span> （4番の生徒の、math！と一発でわかる）
+          </p>
+          <p class="text-xs mt-2">
+            このように、配列の中に構造体を載せることで、複雑なデータもバグを埋め込むことなく圧倒的に直感的に処理できるようになります。
+          </p>
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          5. おまけ：switch文
+        </h2>
+        <p class="text-sm mb-4">
+          最後に、条件分岐のもう一つの書き方を紹介します。特定の値（1なら〇〇、2なら〇〇）によって処理を分けたい時、<code
+            >if</code
+          >
+          文を並べるよりスッキリ書ける <code>switch</code> 文です。
+        </p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    int command;
+    cin &gt;&gt; command;
+
+    switch (command) {
+        case 1:
+            cout &lt;&lt; "攻撃！" &lt;&lt; endl;
+            break; // ← breakを忘れると次の処理も実行されてしまうので注意！
+        case 2:
+            cout &lt;&lt; "防御！" &lt;&lt; endl;
+            break;
+        default:
+            // どの case にも当てはまらない場合
+            cout &lt;&lt; "逃げる" &lt;&lt; endl;
+            break;
+    }
+}</code></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="text-center py-10">
+      <div
+        class="inline-block bg-white border-2 border-gray-400 px-6 py-2 shadow-[2px_2px_0_#000] text-sm font-bold text-gray-700 win-panel"
+      >
+       IQ C++ Spring Workshop 2026 - Rep. Takiguchi
+      </div>
+    </footer>
+
+    <script>
+      hljs.highlightAll();
+      function copyCode(btn) {
+        const container = btn.closest('.code-container');
+        const code = container.querySelector('code').innerText;
+        navigator.clipboard.writeText(code);
+        const originalText = btn.innerText;
+        btn.innerText = '完了！';
+        btn.classList.remove('bg-blue-600');
+        btn.classList.add('bg-green-600');
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('bg-green-600');
+          btn.classList.add('bg-blue-600');
+        }, 1500);
+      }
+    </script>
+  </body>
+</html>
