@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>授業のC言語(C89)からICPC(C17)へ | ICPC C講習会</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/c.min.js"></script>
+
+    <style>
+      body {
+        background-color: #c0c0c0;
+        font-family: 'MS PGothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .blink {
+        animation: blink 1s infinite;
+      }
+      .win-panel {
+        border: 2px solid;
+        border-color: #ffffff #808080 #808080 #ffffff;
+      }
+      pre {
+        background: #ffffff !important;
+        border: 2px solid #808080 !important;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        border-radius: 0px;
+        margin: 0.5rem 0 !important;
+        padding: 1rem !important;
+        overflow-x: auto;
+      }
+      code.hljs {
+        background: transparent !important;
+        font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace !important;
+        font-size: 0.9rem !important;
+        padding: 0 !important;
+        color: #000000;
+      }
+      .code-container {
+        position: relative;
+        height: 100%;
+      }
+      .code-container pre {
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body class="text-black pb-10">
+    <header class="text-center py-10">
+      <div class="inline-block bg-white border-4 border-gray-500 shadow-[4px_4px_0_#888] px-8 py-4 text-left">
+        <h1 class="text-2xl font-bold text-blue-800 border-b-4 border-double border-blue-500 pb-2 text-center">
+          C言語(C89)からICPC(C17)へ
+        </h1>
+        <p class="mt-3 text-sm text-center font-bold">
+          〜 ICPCで使えるC言語の機能をマスターしよう 〜<br />
+          競技プログラミングでは、C17の機能をフル活用してコードを書いていきます！
+        </p>
+        <p class="mt-2 blink text-blue-700 font-bold text-center">最新の機能を使いこなせ</p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 space-y-10">
+      <div class="mb-4">
+        <a
+          href="./index.html"
+          class="inline-block bg-gray-200 border-2 border-t-white border-l-white border-r-gray-600 border-b-gray-600 px-4 py-2 font-bold text-sm hover:bg-gray-100 active:border-t-gray-600 active:border-l-gray-600 active:border-r-white active:border-b-white"
+        >
+          🔙 トップページに戻る
+        </a>
+      </div>
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          1. for文の中で変数宣言できる (C17)
+        </h2>
+        <p class="text-sm mb-4">
+          大学の授業（C89ベース）では、関数の最初に変数をまとめて宣言していると思います。<br />
+          しかしICPCで利用できるC17環境では、コードの途中での変数宣言が可能です。必要だと思ったらその時に記述できるので書きやすい。また、<strong>for文のカッコ内で直接変数宣言</strong>が可能です。
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <p class="font-bold text-sm text-gray-700 bg-gray-200 px-2 py-1 border-2 border-gray-400">
+              授業の書き方 (C89)
+            </p>
+            <div class="code-container opacity-80">
+              <pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int i; /* 上で宣言しておく */
+
+    for(i = 0; i < 5; i++){
+        printf("%d\n", i);
+    }
+    return 0;
+}</code></pre>
+            </div>
+          </div>
+          <div>
+            <p class="font-bold text-sm text-blue-900 bg-blue-200 px-2 py-1 border-2 border-blue-400">
+              ICPCの書き方 (C17)
+            </p>
+            <div class="code-container">
+              <button
+                onclick="copyCode(this)"
+                class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-[10px] px-1 py-0 win-panel"
+              >
+                コピー
+              </button>
+              <pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    /* for文の中で直接宣言できる！ */
+    for(int i = 0; i < 5; i++){
+        printf("%d\n", i);
+    }
+    return 0;
+}</code></pre>
+            </div>
+          </div>
+        </div>
+        <p class="text-sm font-bold text-blue-800">
+          <br /><br />
+          💡 なぜ便利？<br />
+          変数 i の有効範囲を for
+          文の中だけに限定でき、バグが減ります。競技プログラミングではこちらの書き方が一般的です。
+        </p>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          2. 可変長配列(VLA) と グローバル配列
+        </h2>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-4 border-b-2 border-gray-400 pb-1">
+          ■ 実行時に入力サイズに合わせて配列を作る
+        </h3>
+        <p class="text-sm mb-4">
+          授業では
+          <code>int a[1000];</code>
+          のように固定サイズで配列を作っていましたが、競プロでは「N個の整数が与えられる」のように、入力サイズが実行するまでわかりません。<br />
+          C17では、入力された変数Nを使って<strong>動的に配列を作る</strong>ことができます。
+        </p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int n;
+    scanf("%d", &n);
+
+    int a[n]; // 入力されたNのサイズで配列を作る！
+
+    for(int i = 0; i < n; i++){
+        scanf("%d", &a[i]);
+    }
+    return 0;
+}</code></pre>
+        </div>
+
+        <div class="bg-red-50 border-2 border-red-500 p-4 text-sm win-panel mb-6">
+          <p class="font-bold text-red-600 mb-2">⚠️ 巨大すぎる可変長配列の罠</p>
+          <p>
+            <code>int a[100000000];</code>
+            のような巨大な配列を関数の内側（<code>main</code>の中など）で作ると、スタック領域の容量不足により
+            <strong>Segmentation Fault（セグフォ）</strong> で強制終了する可能性があります。
+          </p>
+        </div>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-6 border-b-2 border-gray-400 pb-1">
+          ■ 巨大な配列は「グローバル配列」で解決
+        </h3>
+        <p class="text-sm mb-4">
+          競技プログラミングでは、巨大なサイズの配列を確保する場合、<code>main</code>
+          関数の<strong>外側（グローバル領域）</strong>に配置するのが定石です。スタック領域とは別の場所に確保されるため、安全に巨大な配列を作れます。
+        </p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-c">#include &lt;stdio.h&gt;
+
+#define MAXN 100000
+
+/* 関数の外に置くことで巨大な配列も安全に確保 */
+int a[MAXN];
+
+int main(void)
+{
+    int n;
+    scanf("%d", &n);
+
+    for(int i = 0; i < n; i++){
+        scanf("%d", &a[i]);
+    }
+    return 0;
+}</code></pre>
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-red-700 bg-red-100 border-l-4 border-red-700 px-3 py-1 mb-4">
+          3. 提出が通らない！？「よくある３大間違い」
+        </h2>
+        <p class="text-sm mb-6">ICPCの練習や本番で、特に1年生が陥りやすいエラーの原因をまとめました。</p>
+
+        <h3 class="font-bold text-red-600 mb-2 border-b-2 border-gray-400 pb-1">❌ 罠1：配列の範囲外アクセス</h3>
+        <p class="text-sm mb-3">
+          配列の要素数は <code>N</code> 個確保した場合、インデックスは <code>0</code> から
+          <code>N-1</code> までしか使えません。<code>a[N]</code> にアクセスすると予期せぬ動作をします。
+        </p>
+        <div class="code-container mb-6 opacity-80">
+          <pre><code class="language-c">int a[5];
+// 使えるのは a[0], a[1], a[2], a[3], a[4] のみ！
+a[5] = 10; // ← エラー！確保した領域の外を触っている（範囲外アクセス）</code></pre>
+        </div>
+
+        <h3 class="font-bold text-red-600 mb-2 border-b-2 border-gray-400 pb-1">
+          ❌ 罠2：scanf の & (アンパサンド) 忘れ
+        </h3>
+        <p class="text-sm mb-3">
+          数値を入力させるときに <code>&</code> を忘れると、ほぼ確実に
+          <strong>Segmentation Fault</strong> となり提出しても Runtime Error (RE) になります。
+        </p>
+        <div class="code-container mb-6 opacity-80">
+          <pre><code class="language-c">int n;
+scanf("%d", n);  // ← 誤り！ & が無いのでプログラムがクラッシュする
+scanf("%d", &n); // ← 正解！ 変数のメモリ番地を渡す必要がある</code></pre>
+        </div>
+
+        <h3 class="font-bold text-red-600 mb-2 border-b-2 border-gray-400 pb-1">
+          ❌ 罠3：文字列を入れる配列のサイズ不足
+        </h3>
+        <p class="text-sm mb-3">
+          「5文字の文字列が入力される」問題だからといって、<code>char s[5];</code>
+          と宣言してはいけません。文字列の最後には必ず
+          <strong>終端文字 <code>\0</code></strong>
+          が必要になるため、文字数＋1のサイズ（安全に少し大きめ）を確保する必要があります。
+        </p>
+        <div class="code-container mb-4 opacity-80">
+          <pre><code class="language-c">char s[5];
+scanf("%s", s); // もし "hello" と入力されると、\0 を入れるための6個目の箱がなくてバグる！
+
+// 正しくは、余裕を持って大きめのサイズを宣言しておく
+char s[100];
+scanf("%s", s); </code></pre>
+        </div>
+      </section>
+
+      <div class="text-left">
+        <a
+          href="string.html"
+          class="inline-block bg-white text-blue-800 px-6 py-3 font-bold border-2 border-blue-900 shadow-[3px_3px_0_#1e3a8a] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition"
+        >
+          🡨 戻る：文字列とchar型
+        </a>
+      </div>
+    </main>
+
+    <footer class="text-center py-10">
+      <div
+        class="inline-block bg-white border-2 border-gray-400 px-6 py-2 shadow-[2px_2px_0_#000] text-sm font-bold text-gray-700 win-panel"
+      >
+        ICPC C Language Preparation
+      </div>
+    </footer>
+
+    <script>
+      hljs.highlightAll();
+      function copyCode(btn) {
+        const container = btn.closest('.code-container');
+        const code = container.querySelector('code').innerText;
+        navigator.clipboard.writeText(code);
+        const originalText = btn.innerText;
+        btn.innerText = '完了！';
+        const isGray = btn.classList.contains('bg-gray-600');
+        const defaultBg = isGray ? 'bg-gray-600' : 'bg-blue-600';
+        btn.classList.remove(defaultBg);
+        btn.classList.add('bg-green-600');
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('bg-green-600');
+          btn.classList.add(defaultBg);
+        }, 1500);
+      }
+    </script>
+  </body>
+</html>

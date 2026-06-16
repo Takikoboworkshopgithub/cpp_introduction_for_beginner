@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ICPC特有の入力形式と「考察」「実装」の考え方 | ICPC C講習会</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+
+    <style>
+      body {
+        background-color: #c0c0c0;
+        font-family: 'MS PGothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .blink {
+        animation: blink 1s infinite;
+      }
+      .win-panel {
+        border: 2px solid;
+        border-color: #ffffff #808080 #808080 #ffffff;
+      }
+      pre {
+        background: #ffffff !important;
+        border: 2px solid #808080 !important;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        border-radius: 0px;
+        margin: 0.5rem 0 !important;
+        padding: 1rem !important;
+        overflow-x: auto;
+      }
+      code.hljs {
+        background: transparent !important;
+        font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace !important;
+        font-size: 0.9rem !important;
+        padding: 0 !important;
+        color: #000000;
+      }
+      .code-container {
+        position: relative;
+        height: 100%;
+      }
+      .code-container pre {
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body class="text-black pb-10">
+    <header class="text-center py-10">
+      <div
+        class="inline-block bg-white border-4 border-gray-500 shadow-[4px_4px_0_#888] px-8 py-4 text-left max-w-2xl w-full win-panel"
+      >
+        <h1 class="text-xl font-bold text-blue-800 border-b-4 border-double border-blue-500 pb-2 text-center">
+          ICPC特有の入力形式と「考察」「実装」の考え方
+        </h1>
+        <p class="mt-3 text-sm text-center font-bold text-gray-700">
+          C言語の基本文法や文字列操作を学んだら、<br />
+          次はICPCの実戦的な形式と問題の解き方に進みましょう。
+        </p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 space-y-10">
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left win-panel">
+        <h2 class="text-base font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          ■ ICPC特有の入力形式
+        </h2>
+        <p class="text-sm mb-4 leading-relaxed">
+          授業などで作成するプログラムでは、<code>int n; scanf("%d", &n);</code>
+          のように一度だけ入力を受け取ることが多いでしょう。<br />
+          しかしICPCでは、<strong>複数のテストケースを連続して処理する問題</strong>が頻繁に出題されます。
+        </p>
+
+        <div class="bg-gray-100 border-2 border-gray-400 p-4 mb-6 win-panel">
+          <p class="font-bold text-sm text-blue-800 mb-1">📄 例題：AOJ 1681 - 2025</p>
+          <p class="text-xs text-gray-700 mb-3 leading-relaxed">
+            与えられた整数 n に対して n × n の掛け算表の項目の総和を求める問題です。
+          </p>
+
+          <div class="grid grid-cols-2 gap-4 text-xs font-mono">
+            <div>
+              <p class="font-bold text-gray-700 bg-gray-300 px-2 py-0.5 border border-gray-400">
+                Sample Input 1 (入力)
+              </p>
+              <pre class="my-1 p-2 bg-white border border-gray-400">
+9
+1
+2
+100
+0</pre
+              >
+            </div>
+            <div>
+              <p class="font-bold text-gray-700 bg-gray-300 px-2 py-0.5 border border-gray-400">
+                Sample Output 1 (出力)
+              </p>
+              <pre class="my-1 p-2 bg-white border border-gray-400">
+2025
+1
+9
+25502500</pre
+              >
+            </div>
+          </div>
+        </div>
+
+        <h3 class="font-bold text-blue-800 mb-2 text-sm border-b-2 border-gray-400 pb-1">① 番兵値（sentinel）とは</h3>
+        <p class="text-sm mb-4 leading-relaxed">この入力例は、以下のルールに従っています。</p>
+        <ul class="list-disc list-inside text-sm space-y-1 mb-4 pl-2 text-gray-800">
+          <li><code>n = 9</code> なら <code>2025</code> を出力</li>
+          <li><code>n = 1</code> なら <code>1</code> を出力</li>
+          <li><code>n = 2</code> なら <code>9</code> を出力</li>
+          <li><code>n = 100</code> なら <code>25502500</code> を出力</li>
+          <li><code>n = 0</code> が来たら終了</li>
+        </ul>
+        <p class="text-sm mb-4 leading-relaxed">
+          ここで重要なのは、<strong>最後の 0 も入力データの一部</strong>であることです。<br />
+          この 0
+          は「これ以上テストケースはありません」という合図として使われています。このような値を<strong>番兵値（sentinel）</strong>と呼びます。
+        </p>
+
+        <h3 class="font-bold text-blue-800 mb-2 text-sm border-b-2 border-gray-400 pb-1">
+          ② while(1) と break による実装
+        </h3>
+        <p class="text-sm mb-4 leading-relaxed">
+          このような問題では、無限ループを作る <code>while (1)</code> と、ループを抜ける
+          <code>break</code> を組み合わせて処理することが多くあります。入力を最後まで受け取る感覚を掴みましょう。
+        </p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-c">#include &lt;stdio.h&gt;
+
+typedef long long ll;
+
+int main() {
+    ll N;
+
+    while (1) {
+        scanf("%lld", &N);
+
+        // 0 が来たらループを抜けて終了する
+        if (N == 0) break;
+
+        ll a = (N * (N + 1)) / 2;
+        a *= a;
+
+        printf("%lld\n", a);
+    }
+
+    return 0;
+}</code></pre>
+        </div>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          ICPCでは、<code>0 が来たら終了</code>、<code>-1 が来たら終了</code>、<code>0 0 が来たら終了</code>
+          のような入力形式が非常によく登場します。そのため、このループ処理のパターンには慣れておきましょう。
+        </p>
+      </section>
+
+      <div
+        class="bg-blue-900 text-white border-4 border-blue-900 shadow-[4px_4px_0_#888] p-4 text-center font-bold text-sm win-panel"
+      >
+        入力の受け取り方に慣れたら、次は問題の見方です。<br />
+        ICPCでは、まず何を考えるかを整理し、そのあとでコードに落とし込むのが基本になります。
+      </div>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left win-panel">
+        <h2 class="text-base font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          ■ ICPCでは、問題を2段階で考える
+        </h2>
+        <p class="text-sm mb-4 leading-relaxed">
+          競技プログラミングでは、<strong>「何をすればよいか考える（考察）」</strong>と、<strong>「それをプログラムにする（実装）」</strong>という2段階で問題を解きます。<br />
+          実装で行き詰まったと感じるとき、実際にはコードではなく「考察の言語化」で止まっていることが多いため、この2つのステップを分けて見る練習をしてみましょう。
+        </p>
+
+        <div class="bg-gray-50 border-2 border-gray-300 p-4 mb-6 win-panel">
+          <p class="font-bold text-sm text-gray-800 mb-1">🔍 問題を読んでみよう：接頭辞と接尾辞を同じに</p>
+          <p class="text-xs text-gray-700 leading-relaxed">
+            元の文字列 s を接頭辞にも接尾辞にも含む、s自身以外の最短の文字列を求める問題です。
+          </p>
+        </div>
+
+        <h3 class="font-bold text-blue-800 mb-2 text-sm border-b-2 border-gray-400 pb-1">2-1. 問題文を言い換える</h3>
+        <p class="text-sm mb-3 leading-relaxed">
+          まず、元の問題文を整理するために用語の定義を一度確認し、曖昧さをなくします。
+        </p>
+        <p class="text-sm mb-3 leading-relaxed">
+          例えば文字列 <code class="bg-gray-100 px-1 font-mono">"test"</code> を考えます。
+        </p>
+        <ul class="list-disc list-inside text-sm space-y-1 mb-4 pl-2 text-gray-800">
+          <li>
+            <strong>接頭辞（prefix）</strong>：先頭から連続する部分文字列（<code class="font-mono">t</code>,
+            <code class="font-mono">te</code>, <code class="font-mono">tes</code>, <code class="font-mono">test</code>）
+          </li>
+          <li>
+            <strong>接尾辞（suffix）</strong>：末尾まで連続する部分文字列（<code class="font-mono">test</code>,
+            <code class="font-mono">est</code>, <code class="font-mono">st</code>, <code class="font-mono">t</code>）
+          </li>
+        </ul>
+        <p class="text-sm mb-4 leading-relaxed">
+          この問題の目的は、<strong>「sを接頭辞にも接尾辞にも持つ、s自身以外の最短の文字列」</strong>を作ることです。例えば
+          <code class="font-mono">"test"</code> なら答えは
+          <code class="font-mono font-bold text-blue-700">"testest"</code> になります。
+        </p>
+
+        <h3 class="font-bold text-blue-800 mb-2 text-sm border-b-2 border-gray-400 pb-1">
+          2-2. 考察（どういう性質に注目するか）
+        </h3>
+        <p class="text-sm mb-3 leading-relaxed">ここではまだコードのことは考えず、「考える部分」を独立させます。</p>
+        <p class="text-sm mb-3 leading-relaxed">
+          <strong>① まず単純に並べてみる</strong><br />
+          文字列 <code class="font-mono">"test"</code> を2個並べると
+          <code class="font-mono">"testtest"</code>
+          になります。しかしこれは少し長すぎます。途中を重ねられないでしょうか。
+        </p>
+        <p class="text-sm mb-3 leading-relaxed">
+          <strong>② 重ねられる部分を探す</strong><br />
+          次のように並びをずらして観察してみます。
+        </p>
+        <pre class="my-1 p-2 bg-gray-50 font-mono text-xs border border-gray-300 win-panel">
+test
+   test</pre
+        >
+        <p class="text-sm mb-3 leading-relaxed">
+          見てみると、先頭と末尾で <code class="font-mono text-red-600 font-bold">t</code> が重なっています。そこで
+          <code class="font-mono bg-yellow-100 px-1 font-bold">"testest"</code>
+          という文字列が作れます。これは条件を満たしつつ最短になります。
+        </p>
+        <p class="text-sm mb-3 leading-relaxed">
+          <strong>③ 別の例を見る</strong><br />
+          <code class="font-mono">"ttt"</code> の場合、大きく重ねて
+          <code class="font-mono bg-yellow-100 px-1 font-bold">"tttt"</code> にできます。
+        </p>
+        <pre class="my-1 p-2 bg-gray-50 font-mono text-xs border border-gray-300 win-panel">
+ttt
+ ttt</pre
+        >
+        <p class="text-sm mb-4 leading-relaxed">
+          <strong>④ 共通部分を探そう</strong><br />
+          実は、<strong>「文字列の接頭辞」と「文字列の接尾辞」のうち、もっとも長く一致する部分（最長一致部分）</strong>を探せばよいことが分かります。<br />
+          例えば <code class="font-mono">"ttt"</code> なら <code class="font-mono">"tt"</code> が一致し、<code
+            class="font-mono"
+            >"cccpppcc"</code
+          >
+          なら <code class="font-mono">"cc"</code> が一致しています。
+        </p>
+
+        <h3 class="font-bold text-blue-800 mb-2 text-sm border-b-2 border-gray-400 pb-1">
+          2-3. 実装（コードに落とし込む）
+        </h3>
+        <p class="text-sm mb-3 leading-relaxed">
+          方針が決まったので、ループや文字列操作を使ってコードを形にします。文字列長は最大50文字と非常に小さいため、すべての長さを順番に試しても十分間に合います。
+        </p>
+        <p class="text-sm mb-3 leading-relaxed">
+          <strong>■ 手順</strong><br />
+          長さ <code class="font-mono">n - 1</code> から <code class="font-mono">1</code> まで逆順に試します。<br />
+          <code class="font-mono">"test"</code> なら、<code class="font-mono">"tes" と "est"</code> ➔
+          <code class="font-mono">"te" と "st"</code> ➔
+          <code class="font-mono">"t" と "t"</code> の順に比較し、最初に一致したものを最長の共通部分（<code
+            class="font-mono"
+            >overlap</code
+          >）とします。<br />
+          答えは、<strong>「元の文字列 ＋ 重なっていない後半部分」</strong>をくっつければ完成です（<code
+            >"test" + "est" = "testest"</code
+          >）。
+        </p>
+
+        <div class="space-y-6 mt-4">
+          <div>
+            <p class="font-bold text-xs text-gray-700 bg-gray-200 px-2 py-1 border border-gray-400 inline-block">
+              C言語実装
+            </p>
+            <div class="code-container">
+              <button
+                onclick="copyCode(this)"
+                class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+              >
+                コピー
+              </button>
+              <pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int main(void) {
+    int n;
+
+    while (scanf("%d", &n) == 1 && n != 0) {
+        char s[55];
+        scanf("%s", s);
+
+        int overlap = 0;
+
+        // 長い候補から順に一致するか確認
+        for (int len = n - 1; len >= 1; len--) {
+            // s と (s + n - len) から始まる len 文字を比較
+            if (strncmp(s, s + n - len, len) == 0) {
+                overlap = len;
+                break;
+            }
+        }
+
+        printf("%s%s\n", s, s + overlap);
+    }
+    return 0;
+}</code></pre>
+            </div>
+          </div>
+
+          <div>
+            <p class="font-bold text-xs text-blue-900 bg-blue-200 px-2 py-1 border border-gray-400 inline-block">
+              C++実装
+            </p>
+            <div class="code-container">
+              <button
+                onclick="copyCode(this)"
+                class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+              >
+                コピー
+              </button>
+              <pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+int main() {
+    int n;
+
+    while (cin >> n && n != 0) {
+        string s;
+        cin >> s;
+
+        int overlap = 0;
+
+        for (int len = n - 1; len >= 1; len--) {
+            bool ok = true;
+
+            for (int i = 0; i < len; i++) {
+                if (s[i] != s[n - len + i]) {
+                    ok = false;
+                    break;
+                }
+            }
+
+            if (ok) {
+                overlap = len;
+                break;
+            }
+        }
+
+        cout << s << s.substr(overlap) << '\n';
+    }
+    return 0;
+}</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-6 text-sm border-b-2 border-gray-400 pb-1">
+          ■ この問題で学んでほしいこと
+        </h3>
+        <p class="text-sm leading-relaxed text-gray-800">
+          この問題の本質は、「どの関数を使うか」ではなく、<strong>「何を調べれば答えになるのか（接頭辞と接尾辞の最長一致部分を探す）」</strong>を見つけることです。<br />
+          ICPCでは、このように【 考察 ➔ 実装
+          】という順番を意識するだけで、コードを書き始めて迷子になるリスクを大きく減らすことができます。まず紙の上で解法を整理し、そのあとでコードに落とし込む習慣を身につけていきましょう。
+        </p>
+      </section>
+    </main>
+
+    <footer class="text-center py-10">
+      <div
+        class="inline-block bg-white border-2 border-gray-400 px-6 py-2 shadow-[2px_2px_0_#000] text-sm font-bold text-gray-700 win-panel"
+      >
+        ICPC C Language Preparation - Input & Logic
+      </div>
+    </footer>
+
+    <script>
+      hljs.highlightAll();
+      function copyCode(btn) {
+        const container = btn.closest('.code-container');
+        const code = container.querySelector('code').innerText;
+        navigator.clipboard.writeText(code);
+        const originalText = btn.innerText;
+        btn.innerText = '完了！';
+        btn.classList.remove('bg-blue-600');
+        btn.classList.add('bg-green-600');
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('bg-green-600');
+          btn.classList.add('bg-blue-600');
+        }, 1500);
+      }
+    </script>
+  </body>
+</html>

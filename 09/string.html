@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ICPC向け：C言語の文字列とchar型 | ICPC C講習会</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/c.min.js"></script>
+
+    <style>
+      body {
+        background-color: #c0c0c0;
+        font-family: 'MS PGothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .blink {
+        animation: blink 1s infinite;
+      }
+      .win-panel {
+        border: 2px solid;
+        border-color: #ffffff #808080 #808080 #ffffff;
+      }
+      pre {
+        background: #ffffff !important;
+        border: 2px solid #808080 !important;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        border-radius: 0px;
+        margin: 0.5rem 0 !important;
+        padding: 1rem !important;
+        overflow-x: auto;
+      }
+      code.hljs {
+        background: transparent !important;
+        font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace !important;
+        font-size: 0.9rem !important;
+        padding: 0 !important;
+        color: #000000;
+      }
+      .code-container {
+        position: relative;
+        height: 100%;
+      }
+      .code-container pre {
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body class="text-black pb-10">
+    <header class="text-center py-10">
+      <div class="inline-block bg-white border-4 border-gray-500 shadow-[4px_4px_0_#888] px-8 py-4 text-left">
+        <h1 class="text-2xl font-bold text-blue-800 border-b-4 border-double border-blue-500 pb-2 text-center">
+          ICPC向け：C言語の文字列とchar型
+        </h1>
+        <p class="mt-3 text-sm text-center font-bold">
+          C言語には「文字列型」が存在しない！？<br />
+          文字列の正体を理解して、ICPCの問題を解き進めよう。
+        </p>
+        <p class="mt-2 blink text-blue-700 font-bold text-center">★ 文字列は配列の仲間である ★</p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 space-y-10">
+      <div class="mb-4">
+        <a
+          href="./index.html"
+          class="inline-block bg-gray-200 border-2 border-t-white border-l-white border-r-gray-600 border-b-gray-600 px-4 py-2 font-bold text-sm hover:bg-gray-100 active:border-t-gray-600 active:border-l-gray-600 active:border-r-white active:border-b-white"
+        >
+          🔙 トップページに戻る
+        </a>
+      </div>
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          1. char型とは何か
+        </h2>
+        <p class="text-sm mb-4">
+          文字列を扱う前に、まずは<strong>文字</strong>について説明します。<br />
+          <code>char</code> 型は、1文字だけを保存するための型です。
+        </p>
+
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    char c = 'A';
+    printf("%c\n", c); // A が出力される
+
+    return 0;
+}</code></pre>
+        </div>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-6 border-b-2 border-gray-400 pb-1">■ char型は「実は整数」</h3>
+        <p class="text-sm mb-4">
+          文字はコンピュータの内部では<strong>数値</strong>として保存されています（ASCIIコード）。数値として出力（<code>%d</code>）すると、その正体がわかります。
+        </p>
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    char c = 'A';
+    printf("%d\n", c); // 65 が出力される
+
+    return 0;
+}</code></pre>
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          2. C言語には「文字列型」がない
+        </h2>
+        <p class="text-sm mb-4">
+          Pythonの <code>s = "hello"</code> や、C++の
+          <code>string s = "hello";</code> のように、C言語には文字列専用の型はありません。<br />
+          C言語において文字列とは、<strong>「char の配列」</strong
+          >として扱われます。一文字ずつ順番に配列に入っているイメージです。
+        </p>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-6 border-b-2 border-gray-400 pb-1">
+          ■ 文字列の正体と終端文字（\0）
+        </h3>
+        <p class="text-sm mb-4">
+          例えば <code>char s[] = "hello";</code> というコードは、内部的には次のような文字の配列として扱われています。
+        </p>
+
+        <div class="code-container mb-6 opacity-80">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-gray-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-c">char s[] = {
+    'h',
+    'e',
+    'l',
+    'l',
+    'o',
+    '\0'
+};</code></pre>
+        </div>
+
+        <div class="mb-4 overflow-x-auto">
+          <table class="min-w-full text-sm text-center border-collapse border border-gray-400">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="border border-gray-400 p-2">インデックス</th>
+                <td class="border border-gray-400 p-2 font-mono">0</td>
+                <td class="border border-gray-400 p-2 font-mono">1</td>
+                <td class="border border-gray-400 p-2 font-mono">2</td>
+                <td class="border border-gray-400 p-2 font-mono">3</td>
+                <td class="border border-gray-400 p-2 font-mono">4</td>
+                <td class="border border-gray-400 p-2 font-mono font-bold text-red-600">5</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th class="border border-gray-400 p-2 bg-gray-50">文字</th>
+                <td class="border border-gray-400 p-2 font-mono">'h'</td>
+                <td class="border border-gray-400 p-2 font-mono">'e'</td>
+                <td class="border border-gray-400 p-2 font-mono">'l'</td>
+                <td class="border border-gray-400 p-2 font-mono">'l'</td>
+                <td class="border border-gray-400 p-2 font-mono">'o'</td>
+                <td class="border border-gray-400 p-2 font-mono font-bold text-red-600">'\0'</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="bg-yellow-50 border-2 border-yellow-500 p-4 text-sm win-panel mb-8">
+          <p class="font-bold text-red-600 mb-2">⚠️ \0（ヌル文字）とは？</p>
+          <p>
+            文字列の終端を示す特殊な文字です。これがないと、コンピュータは<strong>「配列のどこまでが文字列なのか」</strong>を判断できず、関係ないメモリまで読み込んで文字化けやエラーを引き起こします。
+          </p>
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          3. 文字列の入力と長さの取得
+        </h2>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-4 border-b-2 border-gray-400 pb-1">■ 文字列の入力</h3>
+        <p class="text-sm mb-4">
+          文字列を入力として受け取る場合、<code>scanf</code> には <code>%s</code> を使います。<br />
+          注意点として、<strong>配列を渡す場合は <code>&</code> は不要</strong>です。
+        </p>
+        <div class="code-container mb-6">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    char s[100];
+    scanf("%s", s);    // ＆はつけない！
+    printf("%s\n", s);
+
+    return 0;
+}</code></pre>
+        </div>
+
+        <h3 class="font-bold text-blue-800 mb-2 mt-6 border-b-2 border-gray-400 pb-1">■ strlen (文字列の長さ)</h3>
+        <p class="text-sm mb-4">
+          文字列の長さを求めたい場合は、<code>string.h</code> をインクルードして
+          <code>strlen()</code> 関数を使います。<br />
+          ※ 終端文字（<code>\0</code>）は長さに含まれません。
+        </p>
+        <div class="code-container mb-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel"
+          >
+            コピー
+          </button>
+          <pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int main(void)
+{
+    char s[] = "hello";
+    printf("%zu\n", strlen(s)); // 5 が出力される
+
+    return 0;
+}</code></pre>
+        </div>
+      </section>
+      <div class="flex flex-col md:flex-row justify-between gap-4 mt-8">
+        <a
+          href="overflow.html"
+          class="inline-block bg-white text-blue-800 px-6 py-3 font-bold border-2 border-blue-900 shadow-[3px_3px_0_#1e3a8a] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition"
+        >
+          🡨 戻る：オーバーフロー
+        </a>
+
+        <a
+          href="C17.html"
+          class="inline-block bg-blue-600 text-white px-6 py-3 font-bold border-2 border-blue-900 shadow-[3px_3px_0_#1e3a8a] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition md:ml-auto"
+        >
+          次へ：C89からC17へ ➔
+        </a>
+      </div>
+    </main>
+
+    <footer class="text-center py-10">
+      <div
+        class="inline-block bg-white border-2 border-gray-400 px-6 py-2 shadow-[2px_2px_0_#000] text-sm font-bold text-gray-700 win-panel"
+      >
+        ICPC C Language Preparation
+      </div>
+    </footer>
+
+    <script>
+      hljs.highlightAll();
+      function copyCode(btn) {
+        const container = btn.closest('.code-container');
+        const code = container.querySelector('code').innerText;
+        navigator.clipboard.writeText(code);
+        const originalText = btn.innerText;
+        btn.innerText = '完了！';
+        const isGray = btn.classList.contains('bg-gray-600');
+        const defaultBg = isGray ? 'bg-gray-600' : 'bg-blue-600';
+        btn.classList.remove(defaultBg);
+        btn.classList.add('bg-green-600');
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('bg-green-600');
+          btn.classList.add(defaultBg);
+        }, 1500);
+      }
+    </script>
+  </body>
+</html>

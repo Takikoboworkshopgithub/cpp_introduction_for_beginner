@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>オーバーフロー | ICPC対策特設ページ</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+
+    <style>
+      body {
+        background-color: #c0c0c0;
+        font-family: 'MS PGothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+      }
+      .win-panel {
+        border: 2px solid;
+        border-color: #ffffff #808080 #808080 #ffffff;
+      }
+      pre {
+        background: #ffffff !important;
+        border: 2px solid #808080 !important;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        border-radius: 0px;
+        margin: 0.5rem 0 !important;
+        padding: 1rem !important;
+        overflow-x: auto;
+      }
+      code.hljs {
+        background: transparent !important;
+        font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace !important;
+        font-size: 0.9rem !important;
+        padding: 0 !important;
+        color: #000000;
+      }
+      .choice-btn {
+        transition: all 0.1s;
+      }
+      .choice-btn:active:not(:disabled) {
+        border-color: #808080 #ffffff #ffffff #808080;
+        padding-top: 0.45rem;
+        padding-left: 0.85rem;
+      }
+    </style>
+    <style>
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .blink {
+        animation: blink 1s infinite;
+      }
+    </style>
+  </head>
+
+  <body class="text-black pb-10">
+    <header class="text-center py-6">
+      <div class="inline-block bg-white border-4 border-gray-500 shadow-[4px_4px_0_#888] px-8 py-3 text-left">
+        <h1 class="text-xl font-bold text-blue-800 border-b-4 border-double border-blue-500 pb-2 text-center">
+          【Chapter 2】オーバーフロー | ICPC対策特設ページ
+        </h1>
+        <p class="mt-3 text-sm text-center font-bold">
+          〜 計算の途中で値が暴走する恐怖 〜<br />
+          int型の限界を超えると、なぜかマイナスの値になったりして、全く見当外れな結果になることがあります。<br />
+          これが「オーバーフロー」と呼ばれる現象で、ICPCの計算問題では常に警戒すべき落とし穴です。
+        </p>
+        <p class="mt-2 blink text-blue-700 font-bold text-center">気づかないけどやりがちなミス！</p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 space-y-10">
+      <div class="mb-4">
+        <a
+          href="./index.html"
+          class="inline-block bg-gray-200 border-2 border-t-white border-l-white border-r-gray-600 border-b-gray-600 px-4 py-2 font-bold text-sm hover:bg-gray-100 active:border-t-gray-600 active:border-l-gray-600 active:border-r-white active:border-b-white"
+        >
+          🔙 トップページに戻る
+        </a>
+      </div>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          沈黙のバグ「オーバーフロー」
+        </h2>
+        <p class="text-sm mb-3 leading-relaxed">
+          Pythonなどの言語は自動で桁数を拡張してくれますが、C++やJavaといった競技プログラミングの主流言語では、変数の型（箱の大きさ）が厳格に決まっています。<br />
+          箱の許容量を超えて値が溢れ出す現象を<strong>オーバーフロー</strong>と呼び、エラーも出ずに全く見当外れなマイナスの値などに化けてしまうため、看過できない重大なバグの原因となります。
+        </p>
+        <div class="bg-gray-100 p-3 border-2 border-gray-400 text-xs space-y-2 mb-2 leading-relaxed">
+          <p>📦 <strong>int型の限界： -2,147,483,648 〜 2,147,483,647 (約 2 × 10<sup>9</sup>)</strong></p>
+          <p>
+            🚀 <strong>long long型 (Javaは long型) の限界： 約 ±9 × 10<sup>18</sup></strong>
+          </p>
+          <p class="text-red-700 font-bold mt-2">
+            🚨 ICPCの計算問題では、答えだけでなく「計算の途中結果」がintの限界を突破しないか常に留意する必要があります。
+          </p>
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left win-panel">
+        <h2
+          class="text-xl font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4 flex justify-between items-center"
+        >
+          <span>型と計算の陥穽（全5問）</span>
+          <span class="text-xs bg-red-700 text-white px-2 py-0.5 win-panel font-mono">WARNING</span>
+        </h2>
+        <p class="text-sm mb-4 font-bold text-gray-700">
+          以下のコードを実行した際、最終的な出力や変数の値がどうなるかを予測してください。<br />
+          （Pythonはオーバーフローの概念がないため除外しています）
+        </p>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-stretch gap-4 bg-gray-200 p-4 border-2 border-gray-600 shadow-inner"
+        >
+          <div>
+            <span class="text-xs font-bold block mb-2 text-gray-700">【表示言語の切り替え】</span>
+            <div class="flex gap-1">
+              <button
+                onclick="changeLanguage('c')"
+                id="tab-c"
+                class="lang-tab px-4 py-1.5 text-xs font-bold bg-gray-300 border-2 border-t-white border-l-white border-r-gray-600 border-b-gray-600 active:border-t-gray-600 active:border-l-gray-600 active:border-r-white active:border-b-white"
+              >
+                C
+              </button>
+              <button
+                onclick="changeLanguage('cpp')"
+                id="tab-cpp"
+                class="lang-tab px-4 py-1.5 text-xs font-bold bg-white border-2 border-gray-600 shadow-inner"
+              >
+                C++
+              </button>
+              <button
+                onclick="changeLanguage('java')"
+                id="tab-java"
+                class="lang-tab px-4 py-1.5 text-xs font-bold bg-gray-300 border-2 border-t-white border-l-white border-r-gray-600 border-b-gray-600 active:border-t-gray-600 active:border-l-gray-600 active:border-r-white active:border-b-white"
+              >
+                Java
+              </button>
+            </div>
+          </div>
+          <div
+            class="flex flex-col justify-center items-center bg-black text-[#ff0000] font-mono p-3 border-2 border-gray-600 min-w-[160px] shadow-inner text-center"
+          >
+            <span class="text-[10px] text-gray-400 font-sans font-bold uppercase tracking-wider">🎮 SCORE 🎮</span>
+            <span class="text-2xl font-bold mt-1"><span id="quiz-score">0</span> / 5</span>
+            <span class="text-[9px] text-gray-500 mt-1">Correct Answers</span>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="quiz-card bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left"
+        data-answered="false"
+      >
+        <div class="flex justify-between items-center mb-2 border-b-2 border-gray-200 pb-1">
+          <span class="bg-blue-800 text-white text-xs px-2 py-0.5 font-bold win-panel">[足し算]</span>
+          <span class="text-xs text-gray-500 font-bold font-mono">Q1 / 5</span>
+        </div>
+        <h3 class="text-sm font-bold text-gray-900 mb-3">限界を超えた足し算</h3>
+        <div class="mb-4">
+          <div class="code-item hidden" data-lang="c">
+            <pre><code class="language-cpp">int x = 2000000000;
+x += 1000000000;
+printf("%d\n", x);</code></pre>
+          </div>
+          <div class="code-item" data-lang="cpp">
+            <pre><code class="language-cpp">int x = 2000000000;
+x += 1000000000;
+cout &lt;&lt; x &lt;&lt; endl;</code></pre>
+          </div>
+          <div class="code-item hidden" data-lang="java">
+            <pre><code class="language-java">int x = 2000000000;
+x += 1000000000;
+System.out.println(x);</code></pre>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+          <button
+            onclick="answerQuiz(this, false, 'オーバーフロー')"
+            data-value="3000000000"
+            class="choice-btn bg-gray-200 border-2 border-t-white border-l-white border-r-gray-600 border-b-gray-600 px-3 py-2 font-bold text-xs hover:bg-gray-100"
+          >
+            3000000000 (30億)になる
+          </button>
+          <button
+            onclick="answerQuiz(this, true, 'オーバーフロー')"
+            data-value="オーバーフロー"
+            class="choice-btn bg-gray-200 border-2 border-t-white border-l-white border-r-gray-600 border-b-gray-600 px-3 py-2 font-bold text-xs hover:bg-gray-100"
+          >
+            マイナスの値になる(オーバーフロー)
+          </button>
+        </div>
+        <div class="explanation-box hidden mt-3 border-2 border-gray-400 p-3 bg-gray-50 win-panel">
+          <p class="wrong-msg hidden text-red-600 font-bold text-xs mb-1">❌ 30億は int型 では保持できません。</p>
+          <p class="correct-title-msg hidden text-green-600 font-bold text-xs mb-1">🟢 Correct!</p>
+          <p class="desc text-xs text-gray-700">
+            int型の最大値は約21億です。これを超過すると、内部のビット表現の都合上、突然マイナスの値（-1294967296
+            など）に反転してしまいます。
+          </p>
+        </div>
+      </section>
+
+      <section
+        class="quiz-card bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left"
+        data-answered="false"
+      >
+        <div class="flex justify-between items-center mb-2 border-b-2 border-gray-200 pb-1">
+          <span class="bg-blue-800 text-white text-xs px-2 py-0.5 font-bold win-panel">[掛け算]</span>
+          <span class="text-xs text-gray-500 font-bold font-mono">Q2 / 5</span>
+        </div>
+        <h3 class="text-sm font-bold text-gray-900 mb-3">10万 × 10万</h3>
+        <div class="mb-4">
+          <div class="code-item hidden" data-lang="c">
+            <pre><code class="language-cpp">int a = 100000;
+int b = 100000;
+printf("%d\n", a * b);</code></pre>
+          </div>
+          <div class="code-item" data-lang="cpp">
+            <pre><code class="language-cpp">int a = 100000;
+int b = 100000;
+cout &lt;&lt; a * b &lt;&lt; endl;</code></pre>
+          </div>
+          <div class="code-item hidden" data-lang="java">
+            <pre><code class="language-java">int a = 100000;
+int b = 100000;
+System.out.println(a * b);</code></pre>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+          <button
+            onclick="answerQuiz(this, false, 'オーバーフロー')"
+            data-value="10000000000"
+            class="choice-btn bg-gray-200 border-2 border-t-white border-l-white border-r-gray-600 border-b-gray-600 px-3 py-2 font-bold text-xs hover:bg-gray-100"
+          >
+            10000000000 (100億)になる
+          </button>
+          <button
+            onclick="answerQuiz(this, true, 'オーバーフロー')"
+            data-value="オーバーフロー"
+            class="choice-btn bg-gray-200 border-2 border-t-white border-l-white border-r-gray-600 border-b-gray-600 px-3 py-2 font-bold text-xs hover:bg-gray-100"
+          >
+            でたらめな値になる(オーバーフロー)
+          </button>
+        </div>
+        <div class="explanation-box hidden mt-3 border-2 border-gray-400 p-3 bg-gray-50 win-panel">
+          <p class="wrong-msg hidden text-red-600 font-bold text-xs mb-1">❌ 100億は int型 の限界を超えています。</p>
+          <p class="correct-title-msg hidden text-green-600 font-bold text-xs mb-1">🟢 Correct!</p>
+          <p class="desc text-xs text-gray-700">
+            10万という数値自体はint型に余裕で収まりますが、掛け算をした瞬間に100億となり、限界の21億を優に突破してしまいます。
+          </p>
+        </div>
+      </section>
+
+      <section
+        class="quiz-card bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left"
+        data-answered="false"
+      >
+        <div class="flex justify-between items-center mb-2 border-b-2 border-gray-200 pb-1">
+          <span class="bg-blue-800 text-white text-xs px-2 py-0.5 font-bold win-panel">[総和]</span>
+          <span class="text-xs text-gray-500 font-bold font-mono">Q3 / 5</span>
+        </div>
+        <h3 class="text-sm font-bold text-gray-900 mb-3">ループの中の罠</h3>
+        <div class="mb-4">
+          <div class="code-item hidden" data-lang="c">
+            <pre><code class="language-cpp">int sum = 0;
+for(int i = 0; i &lt; 100000; i++){
+    sum += 100000;
+}
+printf("%d\n", sum);</code></pre>
+          </div>
+          <div class="code-item" data-lang="cpp">
+            <pre><code class="language-cpp">int sum = 0;
+for(int i = 0; i &lt; 100000; i++){
+    sum += 100000;
+}
+cout &lt;&lt; sum &lt;&lt; endl;</code></pre>
+          </div>
+          <div class="code-item hidden" data-lang="java">
+            <pre><code class="language-java">int sum = 0;
+for(int i = 0; i &lt; 100000; i++){
+    sum += 100000;
+}
+System.out.println(sum);</code></pre>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+          <button
+            onclick="answerQuiz(this, false, 'オーバーフロー')"
+            data-value="10000000000"
+            class="choice-btn bg-gray-200 border-2 border-t-white border-l-white border-r-gray-600 border-b-gray-600 px-3 py-2 font-bold text-xs hover:bg-gray-100"
+          >
+            10000000000 (100億)になる
+          </button>
+          <button
+            onclick="answerQuiz(this, true, 'オーバーフロー')"
+            data-value="オーバーフロー"
+            class="choice-btn bg-gray-200 border-2 border-t-white border-l-white border-r-gray-600 border-b-gray-600 px-3 py-2 font-bold text-xs hover:bg-gray-100"
+          >
+            途中で溢れる(オーバーフロー)
+          </button>
+        </div>
+        <div class="explanation-box hidden mt-3 border-2 border-gray-400 p-3 bg-gray-50 win-panel">
+          <p class="wrong-msg hidden text-red-600 font-bold text-xs mb-1">
+            ❌ 蓄積される値が 21億 を超える瞬間に破綻します。
+          </p>
+          <p class="correct-title-msg hidden text-green-600 font-bold text-xs mb-1">🟢 Correct!</p>
+          <p class="desc text-xs text-gray-700">
+            足し算であっても、蓄積されていく変数 `sum` の型が int である以上、合計が21億を超えた瞬間に崩壊します。
+          </p>
+        </div>
+      </section>
+
+      <div class="pt-4 border-b-4 border-dotted border-gray-400">
+        <span class="bg-blue-900 text-white font-bold px-3 py-1 text-sm win-panel"
+          >ここからが本番：競技プログラミング最大の陥穽</span
+        >
+      </div>
+
+      <section
+        class="quiz-card bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left"
+        data-answered="false"
+      >
+        <div class="flex justify-between items-center mb-2 border-b-2 border-gray-200 pb-1">
+          <span class="bg-blue-800 text-white text-xs px-2 py-0.5 font-bold win-panel">[キャスト]</span>
+          <span class="text-xs text-gray-500 font-bold font-mono">Q4 / 5</span>
+        </div>
+        <h3 class="text-sm font-bold text-gray-900 mb-3">受け皿を大きくしたから安心？</h3>
+        <div class="mb-4">
+          <div class="code-item hidden" data-lang="c">
+            <pre><code class="language-cpp">int a = 100000;
+int b = 100000;
+long long c = a * b; // 大きな型に代入！
+printf("%lld\n", c);</code></pre>
+          </div>
+          <div class="code-item" data-lang="cpp">
+            <pre><code class="language-cpp">int a = 100000;
+int b = 100000;
+long long c = a * b; // 大きな型に代入！
+cout &lt;&lt; c &lt;&lt; endl;</code></pre>
+          </div>
+          <div class="code-item hidden" data-lang="java">
+            <pre><code class="language-java">int a = 100000;
+int b = 100000;
+long c = a * b; // 大きな型に代入！
+System.out.println(c);</code></pre>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+          <button
+            onclick="answerQuiz(this, false, 'オーバーフロー')"
+            data-value="10000000000"
+            class="choice-btn bg-gray-200 border-2 border-t-white border-l-white border-r-gray-600 border-b-gray-600 px-3 py-2 font-bold text-xs hover:bg-gray-100"
+          >
+            10000000000 (正しく計算される)
+          </button>
+          <button
+            onclick="answerQuiz(this, true, 'オーバーフロー')"
+            data-value="オーバーフロー"
+            class="choice-btn bg-gray-200 border-2 border-t-white border-l-white border-r-gray-600 border-b-gray-600 px-3 py-2 font-bold text-xs hover:bg-gray-100"
+          >
+            不正な値になる(オーバーフロー)
+          </button>
+        </div>
+        <div class="explanation-box hidden mt-3 border-2 border-gray-400 p-3 bg-gray-50 win-panel">
+          <p class="wrong-msg hidden text-red-600 font-bold text-xs mb-1">
+            ❌ 残念ながら、この記述は顕著なバグを生み出します。
+          </p>
+          <p class="correct-title-msg hidden text-green-600 font-bold text-xs mb-1">🟢 Correct!</p>
+          <p class="desc text-xs text-gray-700">
+            一見正しいように見受けられますが、右辺の
+            <code>a * b</code>
+            は「int型同士の計算」として処理されるため、<strong>大きな箱(c)に入れる前に空中でオーバーフロー</strong>してしまいます。壊れた値が代入されるという、非常に発見しづらい陥穽です。
+          </p>
+        </div>
+      </section>
+
+      <section
+        class="quiz-card bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left"
+        data-answered="false"
+      >
+        <div class="flex justify-between items-center mb-2 border-b-2 border-gray-200 pb-1">
+          <span class="bg-blue-800 text-white text-xs px-2 py-0.5 font-bold win-panel">[キャスト]</span>
+          <span class="text-xs text-gray-500 font-bold font-mono">Q5 / 5</span>
+        </div>
+        <h3 class="text-sm font-bold text-gray-900 mb-3">正しいオーバーフロー回避術</h3>
+        <div class="mb-4">
+          <div class="code-item hidden" data-lang="c">
+            <pre><code class="language-cpp">int a = 100000;
+int b = 100000;
+// 1LLを掛けるか、(long long)で明示的に型変換する
+long long c = 1LL * a * b; 
+printf("%lld\n", c);</code></pre>
+          </div>
+          <div class="code-item" data-lang="cpp">
+            <pre><code class="language-cpp">int a = 100000;
+int b = 100000;
+// 1LLを掛けるか、(long long)で明示的に型変換する
+long long c = 1LL * a * b; 
+cout &lt;&lt; c &lt;&lt; endl;</code></pre>
+          </div>
+          <div class="code-item hidden" data-lang="java">
+            <pre><code class="language-java">int a = 100000;
+int b = 100000;
+// 1Lを掛けるか、(long)で明示的に型変換する
+long c = 1L * a * b; 
+System.out.println(c);</code></pre>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+          <button
+            onclick="answerQuiz(this, true, '正解')"
+            data-value="正解"
+            class="choice-btn bg-gray-200 border-2 border-t-white border-l-white border-r-gray-600 border-b-gray-600 px-3 py-2 font-bold text-xs hover:bg-gray-100"
+          >
+            10000000000 (正しく計算される)
+          </button>
+          <button
+            onclick="answerQuiz(this, false, '正解')"
+            data-value="コンパイルエラー"
+            class="choice-btn bg-gray-200 border-2 border-t-white border-l-white border-r-gray-600 border-b-gray-600 px-3 py-2 font-bold text-xs hover:bg-gray-100"
+          >
+            コンパイルエラーになる
+          </button>
+        </div>
+        <div class="explanation-box hidden mt-3 border-2 border-gray-400 p-3 bg-gray-50 win-panel">
+          <p class="wrong-msg hidden text-red-600 font-bold text-xs mb-1">
+            ❌ 不正解です。この記述こそが正しい回避策です。
+          </p>
+          <p class="correct-title-msg hidden text-green-600 font-bold text-xs mb-1">🟢 Correct!</p>
+          <p class="desc text-xs text-gray-700">
+            計算式の先頭で <code>1LL</code> (Javaなら <code>1L</code>) を掛けるか、<code>(long long)a</code>
+            とキャストすることで、右辺の計算式全体が「巨大な箱での計算」に昇格し、無事に正しい結果を得ることができます。
+          </p>
+        </div>
+      </section>
+      <div class="flex flex-col md:flex-row justify-between gap-4 mt-8">
+        <a
+          href="order.html"
+          class="inline-block bg-white text-blue-800 px-6 py-3 font-bold border-2 border-blue-900 shadow-[3px_3px_0_#1e3a8a] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition"
+        >
+          🡨 戻る：計算量の見積もり
+        </a>
+
+        <a
+          href="string.html"
+          class="inline-block bg-blue-600 text-white px-6 py-3 font-bold border-2 border-blue-900 shadow-[3px_3px_0_#1e3a8a] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition md:ml-auto"
+        >
+          次へ：文字列とchar型 ➔
+        </a>
+      </div>
+      <script>
+        let currentQuizScore = 0;
+
+        function changeLanguage(lang) {
+          document.querySelectorAll('.lang-tab').forEach((tab) => {
+            tab.classList.remove('bg-white', 'border-gray-600', 'shadow-inner');
+            tab.classList.add(
+              'bg-gray-300',
+              'border-t-white',
+              'border-l-white',
+              'border-r-gray-600',
+              'border-b-gray-600'
+            );
+          });
+
+          const activeTab = document.getElementById(`tab-${lang}`);
+          if (activeTab) {
+            activeTab.classList.remove(
+              'bg-gray-300',
+              'border-t-white',
+              'border-l-white',
+              'border-r-gray-600',
+              'border-b-gray-600'
+            );
+            activeTab.classList.add('bg-white', 'border-gray-600', 'shadow-inner');
+          }
+
+          document.querySelectorAll('.code-item').forEach((item) => {
+            if (item.getAttribute('data-lang') === lang) {
+              item.classList.remove('hidden');
+            } else {
+              item.classList.add('hidden');
+            }
+          });
+        }
+
+        function answerQuiz(btn, isCorrect, correctValue) {
+          const card = btn.closest('.quiz-card');
+
+          if (card.getAttribute('data-answered') === 'true') return;
+          card.setAttribute('data-answered', 'true');
+
+          const choices = card.querySelectorAll('.choice-btn');
+          choices.forEach((choice) => {
+            choice.disabled = true;
+            choice.classList.add('opacity-60', 'cursor-not-allowed');
+
+            if (choice.getAttribute('data-value') === correctValue) {
+              choice.classList.remove('bg-gray-200', 'text-black', 'opacity-60');
+              choice.classList.add('bg-green-600', 'text-white', 'font-extrabold', 'opacity-100');
+              choice.style.borderColor = '#16a34a';
+            }
+          });
+
+          const expBox = card.querySelector('.explanation-box');
+          expBox.classList.remove('hidden');
+
+          if (isCorrect) {
+            card.querySelector('.correct-title-msg').classList.remove('hidden');
+            currentQuizScore++;
+            document.getElementById('quiz-score').innerText = currentQuizScore;
+          } else {
+            btn.classList.remove('opacity-60');
+            btn.classList.add('bg-red-600', 'text-white', 'font-bold', 'opacity-100');
+            btn.style.borderColor = '#dc2626';
+            card.querySelector('.wrong-msg').classList.remove('hidden');
+          }
+        }
+      </script>
+    </main>
+  </body>
+</html>
