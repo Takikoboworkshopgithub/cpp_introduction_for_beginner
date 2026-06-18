@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第EX講：提出コード総括録 | IQ C++講習会</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+
+    <style>
+      body {
+        background-color: #c0c0c0;
+        font-family: 'MS PGothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .blink {
+        animation: blink 1s infinite;
+      }
+      .win-panel {
+        border: 2px solid;
+        border-color: #ffffff #808080 #808080 #ffffff;
+      }
+      .link-item {
+        background: #ffffff;
+        border: 2px solid #808080;
+        box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.2s;
+      }
+      .link-item:hover {
+        background-color: #f0f8ff;
+      }
+      .memo-box {
+        background-color: #ffffe1;
+        border: 1px solid #000;
+        padding: 10px;
+        box-shadow: 2px 2px 0px #888;
+      }
+    </style>
+  </head>
+
+  <body class="text-black pb-10">
+    <header class="text-center py-10">
+      <div class="inline-block bg-white border-4 border-gray-500 shadow-[4px_4px_0_#888] px-8 py-4 text-left">
+        <h1 class="text-2xl font-bold text-blue-800 border-b-4 border-double border-blue-500 pb-2 text-center">
+          第EX講：提出コード総括録
+        </h1>
+        <p class="mt-3 text-sm text-center font-bold">
+          これまでに歩んできた研鑽（けんさん）の軌跡（きせき）を俯瞰（ふかん）する。<br />
+          過去の己の思考を咀嚼（そしゃく）し、次なる躍進の糧（かて）とせよ！
+        </p>
+        <p class="mt-2 blink text-blue-700 font-bold text-center">★ 過去の演習課題への解答一覧 ★</p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 space-y-10">
+      <div class="memo-box text-center mb-10 max-w-2xl mx-auto">
+        <p class="font-bold text-sm text-blue-900 mb-2">【本稿の主旨】</p>
+        <p class="text-xs leading-relaxed text-left">
+          本稿は、第05講から第07講に至るまでに修めた知識の集大成として、実際に提出されたコード群を一つの目録として編纂（へんさん）したものである。いかに難解に見える事象であっても、紐解（ひもと）けば単純な手順の連なりに過ぎない。自らの手で組み上げた論理の構造を今一度見つめ直し、アルゴリズムの真髄（しんずい）を己の血肉としていただきたい。
+        </p>
+      </div>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          第05講：条件分岐と論理の萌芽
+        </h2>
+        <p class="text-sm mb-4">
+          基礎的な構文から一歩踏み出し、プログラムに状況判断を行わせる「条件分岐」や、文字列操作の機微（きび）に触れた演習である。問題の要求を正確に読み解き、適切な処理へと翻訳する力が試された。
+        </p>
+
+        <div class="space-y-3 mt-4">
+          <div class="link-item p-3 flex justify-between items-center">
+            <span class="font-bold text-gray-800 text-sm">B. 180°</span>
+            <a
+              href="https://atcoder.jp/contests/abc202/submissions/76740876"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bg-blue-600 text-white text-xs px-4 py-1 win-panel hover:bg-blue-500 inline-block text-center no-underline"
+              >コード閲覧</a
+            >
+          </div>
+          <div class="link-item p-3 flex justify-between items-center">
+            <span class="font-bold text-gray-800 text-sm">B. Bouzu Mekuri</span>
+            <a
+              href="https://atcoder.jp/contests/abc210/submissions/76740981"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bg-blue-600 text-white text-xs px-4 py-1 win-panel hover:bg-blue-500 inline-block text-center no-underline"
+              >コード閲覧</a
+            >
+          </div>
+          <div class="link-item p-3 flex justify-between items-center">
+            <span class="font-bold text-gray-800 text-sm">A. Lexicographic Order</span>
+            <a
+              href="https://atcoder.jp/contests/adt_all_20231228_1/submissions/76741028"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bg-blue-600 text-white text-xs px-4 py-1 win-panel hover:bg-blue-500 inline-block text-center no-underline"
+              >コード閲覧</a
+            >
+          </div>
+          <div class="link-item p-3 flex justify-between items-center">
+            <span class="font-bold text-gray-800 text-sm">D. Mex</span>
+            <a
+              href="https://atcoder.jp/contests/adt_easy_20240116_3/submissions/76741073"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bg-blue-600 text-white text-xs px-4 py-1 win-panel hover:bg-blue-500 inline-block text-center no-underline"
+              >コード閲覧</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          第06講：反復処理と秩序の形成
+        </h2>
+        <p class="text-sm mb-4">
+          配列の走査（そうさ）やデータの並べ替えなど、無作為に散らばった情報を秩序立てて処理する技法を修練した課題群である。反復と集計を通じ、コンピュータならではの計算能力の恩恵を体感できたはずである。
+        </p>
+
+        <div class="space-y-3 mt-4">
+          <div class="link-item p-3 flex justify-between items-center">
+            <span class="font-bold text-gray-800 text-sm">C - Go to School</span>
+            <a
+              href="https://atcoder.jp/contests/abc142/submissions/76741177"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bg-blue-600 text-white text-xs px-4 py-1 win-panel hover:bg-blue-500 inline-block text-center no-underline"
+              >コード閲覧</a
+            >
+          </div>
+          <div class="link-item p-3 flex justify-between items-center">
+            <span class="font-bold text-gray-800 text-sm">B - Do you know the second highest mountain?</span>
+            <a
+              href="https://atcoder.jp/contests/abc201/submissions/76741199"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bg-blue-600 text-white text-xs px-4 py-1 win-panel hover:bg-blue-500 inline-block text-center no-underline"
+              >コード閲覧</a
+            >
+          </div>
+          <div class="link-item p-3 flex justify-between items-center">
+            <span class="font-bold text-gray-800 text-sm">C - Energy Drink Collector</span>
+            <a
+              href="https://atcoder.jp/contests/abc121/submissions/76741274"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bg-blue-600 text-white text-xs px-4 py-1 win-panel hover:bg-blue-500 inline-block text-center no-underline"
+              >コード閲覧</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          第07講：計算量への意識とデータ構造
+        </h2>
+        <p class="text-sm mb-4">
+          より高度な探索やデータの取り扱いに踏み込み、プログラムの実行時間（計算量）に対する意識を醸成する試金石（しきんせき）となった。効率的な処理を実現するためには、手当たり次第の操作を脱却し、一段高い視野を持つことが不可欠である。
+        </p>
+
+        <div class="space-y-3 mt-4">
+          <div class="link-item p-3 flex justify-between items-center">
+            <span class="font-bold text-gray-800 text-sm">F - 1D puyopuyo</span>
+            <a
+              href="https://atcoder.jp/contests/adt_all_20260213_2/submissions/76741348"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bg-blue-600 text-white text-xs px-4 py-1 win-panel hover:bg-blue-500 inline-block text-center no-underline"
+              >コード閲覧</a
+            >
+          </div>
+          <div class="link-item p-3 flex justify-between items-center">
+            <span class="font-bold text-gray-800 text-sm">C - Green Bin</span>
+            <a
+              href="https://atcoder.jp/contests/abc137/submissions/76716023"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bg-blue-600 text-white text-xs px-4 py-1 win-panel hover:bg-blue-500 inline-block text-center no-underline"
+              >コード閲覧</a
+            >
+          </div>
+          <div class="link-item p-3 flex justify-between items-center">
+            <span class="font-bold text-gray-800 text-sm">B - Kagami Mochi</span>
+            <a
+              href="https://atcoder.jp/contests/abc085/submissions/76741416"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bg-blue-600 text-white text-xs px-4 py-1 win-panel hover:bg-blue-500 inline-block text-center no-underline"
+              >コード閲覧</a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="text-center py-10">
+      <div
+        class="inline-block bg-white border-2 border-gray-400 px-6 py-2 shadow-[2px_2px_0_#000] text-sm font-bold text-gray-700 win-panel"
+      >
+        IQ C++ Spring Workshop 2026 - Rep. Takiguchi
+      </div>
+    </footer>
+  </body>
+</html>
