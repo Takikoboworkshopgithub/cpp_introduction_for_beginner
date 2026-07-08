@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A問題：最強のカードを見つけろ | ICPC国内予選 過去問解説</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- highlight.js による本格的なコードハイライト -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+
+    <style>
+      body {
+        background-color: #c0c0c0;
+        font-family: 'MS PGothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .blink {
+        animation: blink 1s infinite;
+      }
+      .win-panel {
+        border: 2px solid;
+        border-color: #ffffff #808080 #808080 #ffffff;
+      }
+      .win-panel-inset {
+        border: 2px solid;
+        border-color: #808080 #ffffff #ffffff #808080;
+      }
+      pre {
+        background: #ffffff !important;
+        border: 2px solid #808080 !important;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        border-radius: 0px; /* レトロ感を出すため角丸排除 */
+        margin: 0.5rem 0 !important;
+        padding: 1rem !important;
+        overflow-x: auto;
+      }
+      code.hljs {
+        background: transparent !important;
+        font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace !important;
+        font-size: 0.9rem !important;
+        padding: 0 !important;
+        color: #000000;
+      }
+      .code-container {
+        position: relative;
+        height: 100%;
+      }
+      .code-container pre {
+        height: 100%;
+      }
+      .memo-box {
+        background-color: #ffffe1;
+        border: 1px solid #000;
+        padding: 12px;
+        box-shadow: 2px 2px 0px #888;
+      }
+    </style>
+  </head>
+
+  <body class="text-black pb-10">
+    <!-- 上部ナビゲーションバー -->
+    <header class="bg-blue-900 text-white p-2 text-sm font-bold flex justify-between items-center shadow-md">
+      <div>ICPC国内予選対策 - 問題A 解説システム</div>
+      <div>
+        <a
+          href="./index.html"
+          class="bg-gray-300 text-black px-3 py-0.5 win-panel text-xs font-normal active:translate-x-0.5 active:translate-y-0.5"
+        >
+          ← 上位ディレクトリへ移動
+        </a>
+      </div>
+    </header>
+
+    <header class="text-center py-10">
+      <div class="inline-block bg-white border-4 border-gray-500 shadow-[4px_4px_0_#888] px-8 py-4 text-left">
+        <h1 class="text-2xl font-bold text-blue-800 border-b-4 border-double border-blue-500 pb-2 text-center">
+          A問題：最強のカードを見つけろ
+        </h1>
+        <p class="mt-3 text-sm text-center font-bold">
+          変わった順序規則を整理し、条件分岐へ落とし込む<br />
+          競技プログラミングの第一歩、条件の優先順位を見極めよ！
+        </p>
+        <p class="mt-2 blink text-blue-700 font-bold text-center">★ 複雑なルールをシンプルな条件分岐に解きほぐせ ★</p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 space-y-10">
+      <!-- 問題概要セクション -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          0. 問題文と解釈・翻訳
+        </h2>
+        <div class="bg-gray-100 p-3 win-panel text-sm mb-4 flex justify-between items-center">
+          <span class="font-bold">問題の原文（AOJ公式）はこちら：</span>
+          <a
+            href="https://onlinejudge.u-aizu.ac.jp/challenges/sources/ICPC/Prelim/1690"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-blue-600 text-white text-xs px-3 py-1.5 font-bold win-panel shadow-[1px_1px_0_#000] active:translate-x-0.5 active:translate-y-0.5"
+          >
+            AOJで問題文を開く ➔
+          </a>
+        </div>
+        <p class="text-sm leading-relaxed mb-4">
+          トランプの強さを普通の順序ではなく、ちょっと変わった<strong>「大老二順」</strong>というルールで並び替えたときに、手札の中で一番強いカードがどれかを答える問題です。
+        </p>
+        <p class="text-sm font-bold mb-2">【強さの順番】</p>
+        <div class="win-panel-inset p-3 bg-gray-50 text-center font-mono text-sm tracking-wide">
+          <span class="text-red-600 font-bold">2 (一番強い)</span> ＞
+          <span class="text-blue-600 font-bold">1 (A)</span> ＞ 13 (K) ＞ 12 (Q) ＞ 11 (J) ＞ 10 ＞ …… ＞ 3 (一番弱い)
+        </div>
+      </section>
+
+      <!-- 法則性とアプローチ -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          1. 法則性・実装方法
+        </h2>
+        <p class="text-sm mb-4">
+          このルールをよーく見ると、実は次の<strong>3つのシンプルな事実（優先順位）</strong>に気づけます。
+        </p>
+
+        <div class="memo-box text-sm space-y-2 mb-4 font-bold">
+          <p class="text-blue-800">① 手札に「2」があれば、それが絶対に一番強い。</p>
+          <p class="text-blue-800">② 「2」がなくて「1」があれば、それが次に強い。</p>
+          <p class="text-blue-800">③ 「2」も「1」もなければ、残りの数字（3〜13）の中で一番大きい数字が強い。</p>
+        </div>
+
+        <p class="text-sm">
+          今回は、この優先順位をそのまま素直にプログラムに落とし込んだ<strong>2つの素敵な解法</strong>を紹介します。どちらの方法も、初心者の方にとって非常に分かりやすいアプローチになっています！
+        </p>
+      </section>
+
+      <!-- パターン1 -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-2">
+          パターン1：優先順位で上からチェックする作戦
+        </h2>
+        <p class="text-sm mb-4">
+          1つ目は、先ほどの「3つの事実」を上から順番に <code>if</code> 文でチェックしていく、とても直感的なコードです。
+        </p>
+        <ul class="text-xs list-disc ml-5 space-y-1 mb-4 text-gray-800">
+          <li>
+            <code>count(C.begin(), C.end(), 2)</code> を使って、手札の中に「2」が1枚でもあるか数えます。あれば即座に 2
+            を出力します。
+          </li>
+          <li>なければ、次に「1」があるか数えます。あれば 1 を出力します。</li>
+          <li>
+            どちらもなければ、残ったカード（3〜13）の中で一番大きい数字が最強になるので、<code>*max_element</code>
+            を使って手札の最大値を探して出力します。
+          </li>
+        </ul>
+
+        <div class="code-container">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel active:translate-x-0.5 active:translate-y-0.5"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    while (true) {
+        int N;
+        cin &gt;&gt; N;
+        if (N == 0) break;
+
+        vector&lt;int&gt; C(N);
+        for (int i = 0; i &lt; N; i++) cin &gt;&gt; C[i];
+
+        // 優先順位①：手札に「2」が含まれるか
+        if (count(C.begin(), C.end(), 2)) {
+            cout &lt;&lt; 2 &lt;&lt; '\n';
+        }
+        // 優先順位②：手札に「1」が含まれるか
+        else if (count(C.begin(), C.end(), 1)) {
+            cout &lt;&lt; 1 &lt;&lt; '\n';
+        }
+        // 優先順位③：それ以外なら単純な最大値
+        else {
+            cout &lt;&lt; *max_element(C.begin(), C.end()) &lt;&lt; '\n';
+        }
+    }
+    return 0;
+}</code></pre>
+        </div>
+      </section>
+
+      <!-- パターン2 -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-2">
+          パターン2：強い順に「持ってる？」と聞いていく作戦
+        </h2>
+        <p class="text-sm mb-4">
+          2つ目は、あらかじめ「強いカードの順番」のリストを用意しておき、そのリストの上から順番にチェックしていくスマートなコードです。
+        </p>
+        <ul class="text-xs list-disc ml-5 space-y-1 mb-4 text-gray-800">
+          <li>
+            最初に、大老二順の強い並び（2, 1, 13, 12 ... 3）をそのまま
+            <code>row</code> という名前の配列に用意しておきます。
+          </li>
+          <li>
+            入ってきた手札を、連想配列（<code>map</code>）を使って「どの数字が何枚あるか」をメモ（カウント）しておきます。
+          </li>
+          <li>
+            あとは、強い順リスト（<code>row</code>）の先頭から順番に「このカード、手札に持ってる？」と map
+            に聞いていきます。持っている（枚数が0より大きい）カードが最初に見つかった時点で、それが「手札の中の最強カード」に決定するので、それを出力して処理を終了（<code>break</code>）します。
+          </li>
+        </ul>
+
+        <div class="code-container">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel active:translate-x-0.5 active:translate-y-0.5"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+void solve(int n) {
+    // 大老二ルールに基づいた「強い順」のリストを定義
+    vector&lt;int&gt; row = {2, 1, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3};
+    map&lt;int, int&gt; count;
+    
+    while(n--) {
+        int a; cin &gt;&gt; a;
+        count[a]++; // 手札にあるカードの枚数を記録
+    }
+    
+    // リストの先頭（最も強いカード）から順番に走査
+    for (int i = 0; i &lt; 13; i++) {
+        if (count[row[i]] &gt; 0) {
+            cout &lt;&lt; row[i] &lt;&lt; '\n';
+            break; // 最初に見つかった強いカードを出力して終了
+        }
+    }
+    return;
+}
+
+int main() {
+    while (true) {
+        int n; cin &gt;&gt; n;
+        if (n == 0) break;
+        solve(n);
+    }
+    return 0;
+}</code></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="text-center py-10">
+      <div
+        class="inline-block bg-white border-2 border-gray-400 px-6 py-2 shadow-[2px_2px_0_#000] text-sm font-bold text-gray-700 win-panel"
+      >
+        IQ プログラミングサークル ICPC部 - 過去問解説ライブラリ
+      </div>
+    </footer>
+
+    <!-- シンタックスハイライト初期化とコピー用JavaScript -->
+    <script>
+      hljs.highlightAll();
+
+      function copyCode(btn) {
+        const container = btn.closest('.code-container');
+        const code = container.querySelector('code').innerText;
+        navigator.clipboard.writeText(code);
+
+        const originalText = btn.innerText;
+        btn.innerText = '完了！';
+
+        btn.classList.remove('bg-blue-600');
+        btn.classList.add('bg-green-600');
+
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('bg-green-600');
+          btn.classList.add('bg-blue-600');
+        }, 1500);
+      }
+    </script>
+  </body>
+</html>

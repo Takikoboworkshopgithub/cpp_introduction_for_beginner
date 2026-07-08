@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ICPC（国際大学対抗プログラミングコンテスト）解説ページ | IQプログラミングサークル</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      body {
+        background-color: #c0c0c0;
+        font-family: 'MS PGothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .blink {
+        animation: blink 1s infinite;
+      }
+      /* Windows 95風の立体ボーダー（外枠白、内枠グレー） */
+      .win-panel {
+        border: 2px solid;
+        border-color: #ffffff #808080 #808080 #ffffff;
+      }
+      /* ボタンなどが窪む表現 */
+      .win-panel-inset {
+        border: 2px solid;
+        border-color: #808080 #ffffff #ffffff #808080;
+      }
+      .memo-box {
+        background-color: #ffffe1;
+        border: 1px solid #000;
+        padding: 10px;
+        box-shadow: 2px 2px 0px #888;
+      }
+    </style>
+  </head>
+
+  <body class="text-black pb-10">
+    <header class="text-center py-10">
+      <div class="inline-block bg-white border-4 border-gray-500 shadow-[4px_4px_0_#888] px-8 py-4 text-left">
+        <h1 class="text-2xl font-bold text-blue-800 border-b-4 border-double border-blue-500 pb-2 text-center">
+          ICPC（国際大学対抗プログラミングコンテスト）解説ページ 2026
+        </h1>
+        <p class="mt-3 text-sm text-center font-bold">
+          大会お疲れさまです！ 解けなかった問題を再チャレンジしてみよう。
+        </p>
+        <p class="mt-2 blink text-blue-700 font-bold text-center">復習</p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 space-y-10">
+      <!-- 練習・過去問サイトへの登録リンク -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          1. 使う教材のURLとアカウント作成(まだ作成していない人)
+        </h2>
+        <p class="text-sm mb-4"></p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+          <div class="bg-gray-100 border-2 border-gray-400 p-3 win-panel flex flex-col justify-between">
+            <div>
+              <p class="font-bold text-sm text-blue-800 mb-1">① アカウント作成</p>
+              <p class="text-xs text-gray-600 mb-4">まだ作成していない人向け</p>
+            </div>
+            <a
+              href="https://judge.u-aizu.ac.jp/onlinejudge/register.jsp"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-block bg-blue-600 text-white text-xs px-3 py-2 font-bold win-panel shadow-[2px_2px_0_#000] active:translate-x-0.5 active:translate-y-0.5"
+            >
+              AOJ新規登録を開く
+            </a>
+          </div>
+
+          <div class="bg-gray-100 border-2 border-gray-400 p-3 win-panel flex flex-col justify-between">
+            <div>
+              <p class="font-bold text-sm text-blue-800 mb-1">② ICPC2026-問題</p>
+              <p class="text-xs text-gray-600 mb-4">
+                今回メインで解説する問題はここから出題されています。日本語で読めます。
+              </p>
+            </div>
+            <a
+              href="https://onlinejudge.u-aizu.ac.jp/challenges/sources/ICPC/Prelim?year=2026"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-block bg-green-600 text-white text-xs px-3 py-2 font-bold win-panel shadow-[2px_2px_0_#000] active:translate-x-0.5 active:translate-y-0.5"
+            >
+              国内予選(2026)の過去問
+            </a>
+          </div>
+
+          <div class="bg-gray-100 border-2 border-gray-400 p-3 win-panel flex flex-col justify-between">
+            <div>
+              <p class="font-bold text-sm text-blue-800 mb-1">③ 公式解説</p>
+              <p class="text-xs text-gray-600 mb-4">公式解説はこちらからダウンロードできます。</p>
+            </div>
+            <a
+              href="https://storage.googleapis.com/files.icpc.jp/domestic2026/analysis.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-block bg-red-600 text-white text-xs px-3 py-2 font-bold win-panel shadow-[2px_2px_0_#000] active:translate-x-0.5 active:translate-y-0.5"
+            >
+              解説
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 国内予選 A～D問題解説へのリンク一覧（ここをアップデート） -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          3. 国内予選 過去問解説（Upsolve）
+        </h2>
+        <p class="text-sm mb-5">
+          初心者メンバーでも「なるほど！」と納得できるように噛み砕いた解説資料を用意しました。まずはA問題から順を追ってロジックの本質を学んでいきましょう！
+        </p>
+
+        <div class="space-y-4">
+          <!-- A問題リンク -->
+          <a
+            href="./a.html"
+            class="block bg-gray-100 border-2 border-gray-400 p-4 win-panel hover:bg-gray-200 transition-colors"
+          >
+            <div class="flex justify-between items-start mb-1">
+              <h3 class="font-bold text-blue-800 text-base">【A問題】最強のカードを見つけろ</h3>
+              <span class="text-xs bg-green-200 text-green-800 border border-green-400 px-2 py-0.5 font-bold"
+                >初心者歓迎</span
+              >
+            </div>
+            <p class="text-xs text-gray-700 leading-relaxed">
+              ちょっと変わった強さ順（大老二順）のカードから最強の1枚を探す問題。「優先順位で上からチェックする作戦」と「強い順に持っているか聞く作戦」の、直感的に解ける2つの綺麗なアプローチを解説します。
+            </p>
+          </a>
+
+          <!-- B問題リンク -->
+          <a
+            href="./b.html"
+            class="block bg-gray-100 border-2 border-gray-400 p-4 win-panel hover:bg-gray-200 transition-colors"
+          >
+            <div class="flex justify-between items-start mb-1">
+              <h3 class="font-bold text-blue-800 text-base">【B問題】自動販売機</h3>
+              <span class="text-xs bg-yellow-200 text-yellow-800 border border-yellow-400 px-2 py-0.5 font-bold"
+                >貪欲法（Greedy）</span
+              >
+            </div>
+            <p class="text-xs text-gray-700 leading-relaxed">
+              長い廊下に並ぶ扉を、最小限の自販機でカバーする置き方を考える問題。「一番左から、ギリギリを攻めて設置していく」という、競技プログラミングで超重要な『貪欲法』の基本的な考え方をマスターできます。
+            </p>
+          </a>
+
+          <!-- C問題リンク -->
+          <a
+            href="./c.html"
+            class="block bg-gray-100 border-2 border-gray-400 p-4 win-panel hover:bg-gray-200 transition-colors"
+          >
+            <div class="flex justify-between items-start mb-1">
+              <h3 class="font-bold text-blue-800 text-base">【C問題】残った水</h3>
+              <span class="text-xs bg-orange-200 text-orange-800 border border-orange-400 px-2 py-0.5 font-bold"
+                >左右からの走査</span
+              >
+            </div>
+            <p class="text-xs text-gray-700 leading-relaxed">
+              両端の壁が抜けたデコボコの水槽に、どれだけ水たまりが残るかを計算する問題。「左側の最高峰」と「右側の最高峰」を比べて低い方に合わせるという、1マスずつ独立して高さを導き出すイメージを分かりやすく図解解説します。
+            </p>
+          </a>
+
+          <!-- D問題リンク -->
+          <!--<a
+            href="./d.html"
+            class="block bg-gray-100 border-2 border-gray-400 p-4 win-panel hover:bg-gray-200 transition-colors"
+          >
+            <div class="flex justify-between items-start mb-1">
+              <h3 class="font-bold text-blue-800 text-base">【D問題】回数数列</h3>
+              <span class="text-xs bg-red-200 text-red-800 border border-red-400 px-2 py-0.5 font-bold"
+                >周期性と規則性（10億の壁）</span
+              >
+            </div>
+            <p class="text-xs text-gray-700 leading-relaxed">
+              「直前の数字がこれまでに出た回数」を並べるルールで、10億番目の数字を当てる難問。数式の羅列に惑わされず、数列を塊（グループ）で区切ることで「引き算と割り算一発」で答えを弾き出す、超高速かつ省メモリなスマート解法を徹底解説！
+            </p>
+          </a>
+          <!-->
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

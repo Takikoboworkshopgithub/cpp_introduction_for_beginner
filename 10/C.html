@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C問題：水たまりの容量 | ICPC国内予選 過去問解説</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- highlight.js によるコードハイライト -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+
+    <style>
+      body {
+        background-color: #c0c0c0;
+        font-family: 'MS PGothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .blink {
+        animation: blink 1s infinite;
+      }
+      .win-panel {
+        border: 2px solid;
+        border-color: #ffffff #808080 #808080 #ffffff;
+      }
+      .win-panel-inset {
+        border: 2px solid;
+        border-color: #808080 #ffffff #ffffff #808080;
+      }
+      pre {
+        background: #ffffff !important;
+        border: 2px solid #808080 !important;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        border-radius: 0px;
+        margin: 0.5rem 0 !important;
+        padding: 1rem !important;
+        overflow-x: auto;
+      }
+      code.hljs {
+        background: transparent !important;
+        font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace !important;
+        font-size: 0.9rem !important;
+        padding: 0 !important;
+        color: #000000;
+      }
+      .code-container {
+        position: relative;
+        height: 100%;
+      }
+      .memo-box {
+        background-color: #ffffe1;
+        border: 1px solid #000;
+        padding: 12px;
+        box-shadow: 2px 2px 0px #888;
+      }
+      svg {
+        background-color: #f3f4f6;
+        border: 2px solid #808080;
+        max-width: 100%;
+        height: auto;
+      }
+    </style>
+  </head>
+
+  <body class="text-black pb-10">
+    <!-- 上部ナビゲーションバー -->
+    <header class="bg-blue-900 text-white p-2 text-sm font-bold flex justify-between items-center shadow-md">
+      <div>ICPC国内予選対策 - 問題C 解説システム</div>
+      <div>
+        <a
+          href="./index.html"
+          class="bg-gray-300 text-black px-3 py-0.5 win-panel text-xs font-normal active:translate-x-0.5 active:translate-y-0.5"
+        >
+          ← 上位ディレクトリへ移動
+        </a>
+      </div>
+    </header>
+
+    <header class="text-center py-10">
+      <div class="inline-block bg-white border-4 border-gray-500 shadow-[4px_4px_0_#888] px-8 py-4 text-left">
+        <h1 class="text-2xl font-bold text-blue-800 border-b-4 border-double border-blue-500 pb-2 text-center">
+          C問題：水たまりの容量
+        </h1>
+        <p class="mt-3 text-sm text-center max-w-xl font-bold leading-relaxed mx-auto">
+          この問題は、水槽全体の形を見て解こうとすると難しく感じます。しかし、調べたい区画を1つだけ選び、「この区画には水が残るだろうか？」という視点に切り替えると、解法が自然と見えてきます。競技プログラミングでは、このように「全体」ではなく「1要素」に注目して法則を見つける考え方がよく登場します。
+        </p>
+        <p class="mt-2 blink text-blue-700 font-bold text-center text-xs">★ 視点を極限までミクロに変えてみよう ★</p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 space-y-10">
+      <!-- 1. 問題の解釈 -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          1. 問題の解釈
+        </h2>
+        <p class="text-sm leading-relaxed mb-4">まず問題を簡単な日本語に言い換えてみます。</p>
+        <div
+          class="win-panel p-3 bg-blue-50 border-l-4 border-blue-500 font-bold text-xs text-blue-900 mb-4 leading-relaxed"
+        >
+          水槽の底は凸凹しています。満水だった水槽の両端が開いたので、水は低い場所から流れ出ます。最終的に各区画にどれだけ水が残るかを求め、その合計を計算する問題です。
+        </div>
+        <p class="text-sm leading-relaxed mb-4">
+          一見すると水槽全体を考えたくなりますが、それでは複雑になります。そこで、「1つの区画（マス）だけ」に注目してみます。
+        </p>
+        <div class="memo-box text-xs font-bold text-blue-900">
+          各区画の残る水 ➔ 全部足す ➔ 答え という方針で解き進めましょう。
+        </div>
+      </section>
+
+      <!-- 2. 水が残る条件 -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          2. 水が残る条件
+        </h2>
+        <p class="text-sm leading-relaxed mb-4">
+          ある区画に水が残るためには、<strong>「左側に壁がある」かつ「右側にも壁がある」</strong>の両方が必要です。どちらか片方しか壁がない場合、水はその方向へ流れ出てしまいます。
+        </p>
+
+        <!-- 図① -->
+        <h3 class="font-bold text-xs text-gray-700 mb-1">【図①：水が残るパターン】</h3>
+        <svg width="600" height="160" viewBox="0 0 600 160" class="mb-4">
+          <rect x="0" y="130" width="600" height="30" fill="#666" />
+          <rect x="100" y="50" width="50" height="80" fill="#888" />
+          <rect x="270" y="90" width="50" height="40" fill="#ff9800" />
+          <rect x="440" y="40" width="50" height="90" fill="#888" />
+          <text x="245" y="80" font-size="14" font-weight="bold" fill="#000">調査する区画</text>
+          <text x="105" y="40" font-size="12" fill="#555">左の壁</text>
+          <text x="445" y="30" font-size="12" fill="#555">右の壁</text>
+        </svg>
+        <p class="text-xs text-gray-700 leading-relaxed mb-6">
+          この区画の左右にはどちらも高い場所があります。そのため、この区画には水が残る可能性があります。
+        </p>
+
+        <!-- 図②・③を統合した壁なしパターン -->
+        <h3 class="font-bold text-xs text-gray-700 mb-1">【図②：片方に壁がないパターン】</h3>
+        <svg width="600" height="160" viewBox="0 0 600 160" class="mb-4">
+          <rect x="0" y="130" width="600" height="30" fill="#666" />
+          <rect x="100" y="50" width="50" height="80" fill="#888" />
+          <rect x="270" y="90" width="50" height="40" fill="#ff9800" />
+          <path d="M 330 110 L 450 110 L 440 100 M 450 110 L 440 120" stroke="red" stroke-width="3" fill="none" />
+          <text x="350" y="95" font-size="12" font-weight="bold" fill="red">水が右へ流れてしまう</text>
+          <text x="245" y="80" font-size="14" font-weight="bold" fill="#000">調査する区画</text>
+        </svg>
+        <p class="text-xs text-gray-700 leading-relaxed">
+          左側に高い壁があっても、右側が低ければ水は右へ流れてしまいます。同様に、右側だけ壁があっても左へ流れてしまいます。
+        </p>
+      </section>
+
+      <!-- 3. 水面はどう決まる？ -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          3. 水面はどう決まる？
+        </h2>
+        <p class="text-sm leading-relaxed mb-4">
+          左右に壁があれば水は残りますが、水面は好きな高さまで上げられるわけではありません。
+        </p>
+
+        <!-- 図④ -->
+        <h3 class="font-bold text-xs text-gray-700 mb-1">【図③：水面は低い壁で決まる】</h3>
+        <svg width="600" height="180" viewBox="0 0 600 180" class="mb-4">
+          <!-- 水面・水 -->
+          <rect x="150" y="60" width="290" height="70" fill="#66ccff" opacity="0.5" />
+          <line x1="80" y1="60" x2="480" y2="60" stroke="#0066ff" stroke-width="2" stroke-dasharray="6 4" />
+          <!-- 地形 -->
+          <rect x="0" y="130" width="600" height="30" fill="#666" />
+          <rect x="100" y="20" width="50" height="110" fill="#888" />
+          <!-- 左壁(高さ8) -->
+          <rect x="270" y="90" width="50" height="40" fill="#ff9800" />
+          <!-- 中央(高さ2) -->
+          <rect x="440" y="60" width="50" height="70" fill="#888" />
+          <!-- 右壁(高さ5) -->
+
+          <text x="495" y="65" font-size="14" font-weight="bold" fill="#0066ff">水面</text>
+          <text x="105" y="15" font-size="12" fill="#555">高さ 8</text>
+          <text x="445" y="55" font-size="12" fill="#555">高さ 5</text>
+        </svg>
+        <p class="text-sm leading-relaxed mb-4">
+          例えば、左の壁が高さ8、右の壁が高さ5、真ん中が高さ2だとします。<br />
+          ここに高さ6まで水を入れると、右側（高さ5）の壁を越えて溢れ出してしまいます。そのため、水面は左右の低い方の壁までしか上がることができません。
+        </p>
+        <div class="memo-box text-sm font-bold text-blue-900 text-center">水面 = min(左の壁, 右の壁)</div>
+      </section>
+
+      <!-- 4 & 5. 左右の壁はどう求める？ & なぜ max と min の両方があるの？ -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          4. 左右の壁の検索と、max / min の役割
+        </h2>
+        <p class="text-sm leading-relaxed mb-3">
+          では、「左の壁」とは何でしょうか。実は、<strong>「その区画より左側にある壁の中で、一番高い壁」</strong>のことです。右側も同様です。
+        </p>
+        <p class="text-sm leading-relaxed mb-3">実際のコードでは、以下のようにループを回して求めています。</p>
+        <pre class="text-xs"><code class="language-cpp">int l = 0, r = 0;
+for (int j = 0; j &lt; i; j++)   l = max(l, d[j]); // l：左側で一番高い壁
+for (int j = i + 1; j &lt; n; j++) r = max(r, d[j]); // r：右側で一番高い壁</code></pre>
+
+        <h3 class="font-bold text-sm text-red-800 mt-4 mb-2">💡 なぜ max と min の両方があるの？</h3>
+        <p class="text-sm leading-relaxed mb-4">
+          ここは初心者が一番混乱しやすい部分です。このコードでは
+          <code>d[i] = 1000 - d[i];</code>
+          として、<strong>深さではなく高さに変換</strong>しています。そのため、一番高い壁を探すときは
+          <code>max()</code> を使います。
+        </p>
+        <p class="text-sm leading-relaxed mb-4">
+          その後、見つかった左右の壁の低い方を水面にするために
+          <code>min(l, r)</code> を使います。二つの関数には全く別の役割があります。
+        </p>
+
+        <!-- 役割の対比表 -->
+        <table class="w-full text-xs text-left border-2 border-gray-400 win-panel mb-4">
+          <thead>
+            <tr class="bg-blue-900 text-white font-bold border-b-2 border-gray-400">
+              <th class="p-2 border-r-2 border-gray-400">処理</th>
+              <th class="p-2">意味・役割</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white">
+            <tr class="border-b border-gray-300">
+              <td class="p-2 border-r-2 border-gray-400 font-mono font-bold"><code>max()</code></td>
+              <td class="p-2">左右でそれぞれ<strong>一番高い壁を探す</strong></td>
+            </tr>
+            <tr class="border-b border-gray-300">
+              <td class="p-2 border-r-2 border-gray-400 font-mono font-bold"><code>min()</code></td>
+              <td class="p-2">左右の壁を戦わせ、<strong>低い方の壁を水面にする</strong></td>
+            </tr>
+            <tr>
+              <td class="p-2 border-r-2 border-gray-400 font-mono font-bold"><code>max(..., 0)</code></td>
+              <td class="p-2">計算結果が負になったら0にする（水は残らない）</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 6. 残る水を計算する -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          5. 残る水の計算
+        </h2>
+        <p class="text-sm leading-relaxed mb-4">
+          水面が決まれば、その区画に残る水は <strong>「水面 − 区画の高さ」</strong> です。
+        </p>
+
+        <!-- 図⑤ -->
+        <h3 class="font-bold text-xs text-gray-700 mb-1">【図④：残る水の量】</h3>
+        <svg width="400" height="150" viewBox="0 0 400 150" class="mb-4">
+          <rect x="150" y="30" width="60" height="70" fill="#66ccff" opacity="0.6" />
+          <rect x="150" y="100" width="60" height="30" fill="#ff9800" />
+          <line x1="120" y1="30" x2="240" y2="30" stroke="blue" stroke-width="2" />
+          <text x="250" y="35" font-size="14" font-weight="bold" fill="blue">水面</text>
+          <text x="220" y="80" font-size="12" fill="#333">残る水</text>
+          <text x="220" y="120" font-size="12" fill="#555">区画の高さ</text>
+        </svg>
+
+        <p class="text-sm leading-relaxed mb-4">
+          コードでは <code>ans += max((min(l, r) - d[i]), 0);</code> の1行がこれに対応しています。<br />
+          ここで最後に
+          <code>max(..., 0)</code> を使っているのは、自分が壁そのもので値が負になってしまう場合に、溜まる水を 0
+          にするためです。これをすべての区画について全部足し合わせます。
+        </p>
+      </section>
+
+      <!-- 7. 実装 -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          6. 実装コード
+        </h2>
+        <p class="text-xs mb-3 text-gray-700">
+          考察の流れが、そのまま上から順にコード化されていることを確認してください。
+        </p>
+
+        <div class="code-container">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel active:translate-x-0.5 active:translate-y-0.5"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+
+bool solve(){
+    int n; cin &gt;&gt; n;
+    if (n == 0) return false;
+
+    vector&lt;int&gt; d(n);
+    for (int i = 0; i &lt; n; i++) {
+        cin &gt;&gt; d[i];
+        d[i] = 1000 - d[i]; // 深さではなく高さに変換
+    }
+
+    int ans = 0;
+    for (int i = 0; i &lt; n; i++){
+        int l = 0, r = 0;
+        // 左側で一番高い壁を探す (max)
+        for (int j = 0; j &lt; i; j++) l = max(l, d[j]);
+        // 右側で一番高い壁を探す (max)
+        for (int j = i + 1; j &lt; n; j++) r = max(r, d[j]);
+
+        // 水面を決めて(min)、残る水を足す。負なら0。
+        ans += max((min(l, r) - d[i]), 0);
+    }
+    cout &lt;&lt; ans &lt;&lt; endl;
+    return true;
+}
+
+int main(){
+    while(solve());
+}</code></pre>
+        </div>
+      </section>
+
+      <!-- 8. 計算量 -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">7. 計算量</h2>
+        <p class="text-sm leading-relaxed mb-4">
+          各区画について、毎回独立して左側と右側をすべて見に行きます。<br />
+          そのため、全体の計算量は <strong>O(N²)</strong> となります。
+        </p>
+        <p class="text-sm leading-relaxed">
+          問題の制約は <strong>N ≤ 100</strong> なので、計算回数は最大でも 10,000
+          回程度。実行時間制限に対して十分高速に、余裕を持って間に合います！
+        </p>
+      </section>
+    </main>
+
+    <footer class="text-center py-10">
+      <div
+        class="inline-block bg-white border-2 border-gray-400 px-6 py-2 shadow-[2px_2px_0_#000] text-sm font-bold text-gray-700 win-panel"
+      >
+        IQ プログラミングサークル ICPC部 - 過去問解説ライブラリ
+      </div>
+    </footer>
+
+    <script>
+      hljs.highlightAll();
+
+      function copyCode(btn) {
+        const container = btn.closest('.code-container');
+        const code = container.querySelector('code').innerText;
+        navigator.clipboard.writeText(code);
+
+        const originalText = btn.innerText;
+        btn.innerText = '完了！';
+        btn.classList.remove('bg-blue-600');
+        btn.classList.add('bg-green-600');
+
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('bg-green-600');
+          btn.classList.add('bg-blue-600');
+        }, 1500);
+      }
+    </script>
+  </body>
+</html>

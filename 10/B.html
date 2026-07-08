@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>B問題：自動販売機 | ICPC国内予選 過去問解説</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- highlight.js による本格的なコードハイライト -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+
+    <style>
+      body {
+        background-color: #c0c0c0;
+        font-family: 'MS PGothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .blink {
+        animation: blink 1s infinite;
+      }
+      .win-panel {
+        border: 2px solid;
+        border-color: #ffffff #808080 #808080 #ffffff;
+      }
+      .win-panel-inset {
+        border: 2px solid;
+        border-color: #808080 #ffffff #ffffff #808080;
+      }
+      pre {
+        background: #ffffff !important;
+        border: 2px solid #808080 !important;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        border-radius: 0px; /* レトロ感を出すため角丸排除 */
+        margin: 0.5rem 0 !important;
+        padding: 1rem !important;
+        overflow-x: auto;
+      }
+      code.hljs {
+        background: transparent !important;
+        font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace !important;
+        font-size: 0.9rem !important;
+        padding: 0 !important;
+        color: #000000;
+      }
+      .code-container {
+        position: relative;
+        height: 100%;
+      }
+      .code-container pre {
+        height: 100%;
+      }
+      .memo-box {
+        background-color: #ffffe1;
+        border: 1px solid #000;
+        padding: 12px;
+        box-shadow: 2px 2px 0px #888;
+      }
+    </style>
+  </head>
+
+  <body class="text-black pb-10">
+    <!-- 上部ナビゲーションバー -->
+    <header class="bg-blue-900 text-white p-2 text-sm font-bold flex justify-between items-center shadow-md">
+      <div>ICPC国内予選対策 - 問題B 解説システム</div>
+      <div>
+        <a
+          href="./index.html"
+          class="bg-gray-300 text-black px-3 py-0.5 win-panel text-xs font-normal active:translate-x-0.5 active:translate-y-0.5"
+        >
+          ← 上位ディレクトリへ移動
+        </a>
+      </div>
+    </header>
+
+    <header class="text-center py-10">
+      <div class="inline-block bg-white border-4 border-gray-500 shadow-[4px_4px_0_#888] px-8 py-4 text-left">
+        <h1 class="text-2xl font-bold text-blue-800 border-b-4 border-double border-blue-500 pb-2 text-center">
+          B問題：自動販売機
+        </h1>
+        <p class="mt-3 text-sm text-center font-bold">
+          一方向への走査と、その場での最善択の選択<br />
+          競技プログラミングの超重要手法『貪欲法（Greedy）』の基礎を掴む！
+        </p>
+        <p class="mt-2 blink text-blue-700 font-bold text-center">★ ギリギリまで欲張って、最小の設置数を目指せ ★</p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 space-y-10">
+      <!-- 1 & 2. 問題文と解釈・翻訳 -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          1. 問題文（要約）＆ 解釈・翻訳
+        </h2>
+        <p class="text-sm leading-relaxed mb-4">
+          廊下にあるすべての扉について、自販機までの距離が
+          <strong>d 以下</strong>
+          になるように自販機を設置したいです。必要な自販機の最小台数を求める問題を考えてみましょう。
+        </p>
+
+        <p class="text-sm leading-relaxed mb-4">
+          自販機は廊下の好きな場所に置くことができ、設置した場所から<strong>左に d、右に d</strong>
+          の範囲にある扉をカバーできます。
+        </p>
+
+        <div class="win-panel-inset p-4 bg-gray-50 font-mono text-xs text-center mb-4">
+          <p>自販機 (●)</p>
+          <p class="font-bold text-blue-700">＜－－－－ d －－－－＞★＜－－－－ d －－－－＞</p>
+        </div>
+
+        <p class="text-sm leading-relaxed mb-2">
+          つまり、この問題は表裏を返すと<strong>「長さ 2d の区間で、すべての扉を覆う問題」</strong
+          >と言い換えることができます。
+        </p>
+        <p class="text-sm leading-relaxed">
+          ここで重要な境界条件は、<strong>「① 扉は左から順番に並んでいる」「② 自販機は好きな場所に置ける」</strong
+          >の2点です。
+        </p>
+      </section>
+
+      <!-- 3 & 4. まずどう考える？ ＆ なぜ x+d に置くの？ -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          2. 思考のプロセス（なぜ x+d に置くのか？）
+        </h2>
+        <p class="text-sm leading-relaxed mb-2">
+          まずはシンプルに、<strong>左から順番に扉を見ていく</strong>ことを考えてみましょう。
+        </p>
+        <p class="text-sm font-bold text-gray-700 mb-2">例：d = 5、扉の位置が「10, 20, 40」の場合</p>
+
+        <p class="text-sm leading-relaxed mb-4">
+          まだ自販機は1台も置いていないので、最初の扉（位置 10）は必ず誰かがカバーしなければなりません。<br />
+          では、自販機はどこに置くのが一番「得（最適）」でしょうか？
+        </p>
+
+        <div class="memo-box text-sm space-y-2 mb-4">
+          <p class="font-bold text-blue-900">■ 扉10をカバーできる設置範囲</p>
+          <p class="text-xs font-mono">「5 〜 15」のどこに置いても、扉10をカバーできます。</p>
+          <ul class="text-xs list-disc ml-5 space-y-1">
+            <li>位置 <strong>10</strong> に置くと ➔ カバー範囲は <strong>5 〜 15</strong> までしか届かない。</li>
+            <li>位置 <strong>15</strong> に置くと ➔ カバー範囲は <strong>10 〜 20</strong> まで届く！</li>
+          </ul>
+        </div>
+
+        <p class="text-sm leading-relaxed">
+          右に置けば置くほど、これからチェックする予定の「さらに右側にある扉」を一緒に巻き込んでカバーできる可能性が上がります。<br />
+          したがって、最初の扉の位置を x とすると、<strong>一番右の限界である x+d に置くのが最も得</strong>になります。
+        </p>
+      </section>
+
+      <!-- 2.5 貪欲法（新規追加セクション） -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          3 貪欲法（Greedy）の本質
+        </h2>
+        <p class="text-sm leading-relaxed mb-4">
+          この問題で初めて登場する重要なアルゴリズムが<strong>貪欲法（Greedy）</strong>です。<br />
+          貪欲法とは、<strong class="text-blue-800"
+            >「その時点で一番良いと思われる選択を繰り返して、全体として最適な答えを目指す方法」</strong
+          >です。
+        </p>
+
+        <h3 class="font-bold text-sm text-gray-800 mb-2">■ 身近な貪欲法の例</h3>
+        <ul class="text-xs list-disc ml-5 space-y-1 mb-4 text-gray-700">
+          <li>テストで、<strong>一番高い点数の問題から</strong>順番に解いていく。</li>
+          <li>トラックに、<strong>一番軽い荷物から</strong>順番に積めるだけ積む。</li>
+          <li>今回の問題のように、<strong>一番右まで届くように</strong>自販機を置く。</li>
+        </ul>
+
+        <p class="text-sm leading-relaxed mb-4">
+          このように「今できる一番得なこと」を愚直に選び続けるのが貪欲法の考え方です。しかし、<strong
+            >いつでも貪欲法が正しい（最適解になる）わけではありません。</strong
+          ><br />
+          例えば、RPGゲームで「今持っているコインをその場で全て使う」のが後々有利になるとは限りませんよね。あとで強力な装備を買うために温存したほうが得な場合もあります。
+        </p>
+
+        <p class="text-sm leading-relaxed mb-4 font-bold text-blue-900">
+          ➔
+          つまり、「今一番良さそう」を選んでも絶対に後悔しない（＝先々の選択の邪魔をしない）と証明できるときだけ、貪欲法が使えます。
+        </p>
+
+        <h3 class="font-bold text-sm text-gray-800 mb-2">■ では、この自販機問題では本当に大丈夫？</h3>
+        <p class="text-sm leading-relaxed mb-3">まず、まだカバーされていない一番左の扉に注目してみましょう。</p>
+
+        <div class="win-panel-inset p-3 bg-gray-50 font-mono text-xs mb-3">
+          10 20 40<br />
+          ▲<br />
+          (まだ誰にもカバーされていない最初の扉)
+        </div>
+
+        <p class="text-sm leading-relaxed mb-4">
+          この扉10は、この先どんなスマートな自販機の置き方をしようとも、<strong>絶対に誰かがカバーしなければならない扉</strong>です。「後回しにして、右側を先に考えてから決めよう」としても、この扉10が消えてくれるわけではありません。
+        </p>
+
+        <div class="memo-box text-xs leading-relaxed space-y-1">
+          <p class="font-bold text-gray-800">【損をしない理由】</p>
+          <p>
+            この扉10をカバーするために、どのみち自販機を最低1台消費することはここで<strong>確定</strong>しています。
+          </p>
+          <p>
+            それなら、その1台を <code>5 〜 15</code> の範囲のうち、<strong>一番右端である 15（x+d）</strong>
+            に置いた方が絶対に損をしません。
+          </p>
+          <p>
+            これより左（10など）に置いてしまうと、右側をカバーできる能力がただ狭まるだけで、アルゴリズム上のメリットが何一つないからです。
+          </p>
+        </div>
+
+        <p class="text-sm leading-relaxed mt-4">
+          そして、この1台を置いたあと、次に現れる「まだカバーされていない扉」に対しても、全く同じ論理が100%成り立ちます。<br />
+          したがって、<strong>毎回「今できる一番得なこと（x+dへの配置）」を選び続ければ、最終的に全体でも最小台数（最適解）になる</strong>と言えるのです。
+        </p>
+
+        <div class="bg-blue-50 border-2 border-blue-400 p-3 mt-4 text-xs win-panel">
+          <p class="font-bold text-blue-900">貪欲法で考えるコツ</p>
+          <p class="mt-1 leading-relaxed">
+            競技プログラミングで行き詰まったら、<strong>「端っこ（左や右）から順番に、その場しのぎで確定させられないか？」「今ここで一番極端な（得な）決定をしても、後悔しないかな？」</strong>と自問自答してみてください。それが貪欲法を見つける強力な足がかりになります。
+          </p>
+        </div>
+      </section>
+
+      <!-- 6 & 7 & 8. アルゴリズム・実装・計算量 -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          4. アルゴリズムの全貌と実装
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-gray-50 border-2 border-gray-400 p-4 win-panel">
+            <h3 class="font-bold text-xs text-blue-800 mb-2">【処理手順】</h3>
+            <ol class="text-xs list-decimal ml-4 space-y-2">
+              <li>一番左の扉から順番にスキャンする。</li>
+              <li>「最後に置いた自販機」でカバーできているなら何もしない（スルー）。</li>
+              <li>カバーできていなければ、その扉の x+d の位置に新しく自販機を設置する。</li>
+              <li>これを最後の扉まで繰り返す。</li>
+            </ol>
+          </div>
+          <div class="bg-gray-50 border-2 border-gray-400 p-4 win-panel flex flex-col justify-between">
+            <div>
+              <h3 class="font-bold text-xs text-blue-800 mb-2">【計算量】</h3>
+              <p class="text-xs leading-relaxed">
+                並んでいる扉のデータを左から右へ<strong>ちょうど1回だけ</strong>見ていくだけで全体の配置が確定します。
+              </p>
+            </div>
+            <div class="text-right">
+              <span
+                class="inline-block bg-green-100 text-green-800 font-bold border border-green-400 px-3 py-1 font-mono text-sm"
+              >
+                計算量: O(N)
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="font-bold text-blue-800 mb-2 border-b-2 border-gray-400 pb-1 text-sm">■ 綺麗なC++実装例</h3>
+        <p class="text-xs mb-3 text-gray-700">
+          変数
+          <code>last_pos</code>
+          に「最後に置いた自販機の位置」を保存しておき、各扉との距離をチェックしながら更新していきます。
+        </p>
+
+        <div class="code-container">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel active:translate-x-0.5 active:translate-y-0.5"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    int N, d;
+    while (cin &gt;&gt; N &gt;&gt; d) {
+        if (N == 0 && d == 0) break;
+
+        vector&lt;int&gt; doors(N);
+        for (int i = 0; i &lt; N; i++) {
+            cin &gt;&gt; doors[i];
+        }
+
+        int ans = 0;
+        // 最後に置いた自販機の位置（初期値は十分に左側のマイナス無限大）
+        int last_pos = -2e9; 
+
+        for (int i = 0; i &lt; N; i++) {
+            // 現在の扉が、最後に置いた自販機のカバー範囲（last_pos + d）を超えている場合
+            if (doors[i] &gt; last_pos + d) {
+                ans++; // 新しく自販機を設置
+                last_pos = doors[i] + d; // 最も右側の「扉の位置 + d」に設置する
+            }
+        }
+        cout &lt;&lt; ans &lt;&lt; '\n';
+    }
+    return 0;
+}</code></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="text-center py-10">
+      <div
+        class="inline-block bg-white border-2 border-gray-400 px-6 py-2 shadow-[2px_2px_0_#000] text-sm font-bold text-gray-700 win-panel"
+      >
+        IQ プログラミングサークル ICPC部 - 過去問解説ライブラリ
+      </div>
+    </footer>
+
+    <!-- シンタックスハイライト初期化とコピー用JavaScript -->
+    <script>
+      hljs.highlightAll();
+
+      function copyCode(btn) {
+        const container = btn.closest('.code-container');
+        const code = container.querySelector('code').innerText;
+        navigator.clipboard.writeText(code);
+
+        const originalText = btn.innerText;
+        btn.innerText = '完了！';
+
+        btn.classList.remove('bg-blue-600');
+        btn.classList.add('bg-green-600');
+
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('bg-green-600');
+          btn.classList.add('bg-blue-600');
+        }, 1500);
+      }
+    </script>
+  </body>
+</html>
