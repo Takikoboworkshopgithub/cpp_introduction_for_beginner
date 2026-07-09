@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>D問題：回数数列 | ICPC国内予選 過去問解説</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- highlight.js によるコードハイライト -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+
+    <style>
+      body {
+        background-color: #c0c0c0;
+        font-family: 'MS PGothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .blink {
+        animation: blink 1s infinite;
+      }
+      .win-panel {
+        border: 2px solid;
+        border-color: #ffffff #808080 #808080 #ffffff;
+      }
+      .win-panel-inset {
+        border: 2px solid;
+        border-color: #808080 #ffffff #ffffff #808080;
+      }
+      pre {
+        background: #ffffff !important;
+        border: 2px solid #808080 !important;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        border-radius: 0px;
+        margin: 0.5rem 0 !important;
+        padding: 1rem !important;
+        overflow-x: auto;
+      }
+      code.hljs {
+        background: transparent !important;
+        font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace !important;
+        font-size: 0.9rem !important;
+        padding: 0 !important;
+        color: #000000;
+      }
+      .code-container {
+        position: relative;
+        height: 100%;
+      }
+      .memo-box {
+        background-color: #ffffe1;
+        border: 1px solid #000;
+        padding: 12px;
+        box-shadow: 2px 2px 0px #888;
+      }
+      svg {
+        background-color: #f3f4f6;
+        border: 2px solid #808080;
+        max-width: 100%;
+        height: auto;
+      }
+    </style>
+  </head>
+
+  <body class="text-black pb-10">
+    <!-- 上部ナビゲーションバー -->
+    <header class="bg-blue-900 text-white p-2 text-sm font-bold flex justify-between items-center shadow-md">
+      <div>ICPC国内予選対策 - 問題D 解説システム</div>
+      <div>
+        <a
+          href="./index.html"
+          class="bg-gray-300 text-black px-3 py-0.5 win-panel text-xs font-normal active:translate-x-0.5 active:translate-y-0.5"
+        >
+          ← 上位ディレクトリへ移動
+        </a>
+      </div>
+    </header>
+
+    <header class="text-center py-10">
+      <div class="inline-block bg-white border-4 border-gray-500 shadow-[4px_4px_0_#888] px-8 py-4 text-left">
+        <h1 class="text-2xl font-bold text-blue-800 border-b-4 border-double border-blue-500 pb-2 text-center">
+          D問題：回数数列
+        </h1>
+        <p class="mt-3 text-sm text-center max-w-xl font-bold leading-relaxed mx-auto">
+          一見、巨大な制約（<i>k</i> &le;
+          10<sup>9</sup>）に圧倒されそうな問題です。しかし、実際の出力パターンを注意深く観察することで、背後にある規則的な波が見えてきます。
+        </p>
+        <p class="mt-2 blink text-blue-700 font-bold text-center text-xs">★ 数列の背後に潜む規則性を可視化する ★</p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 space-y-10">
+      <!-- 1. まずは愚直なコードとシミュレーションの限界 -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          1. まずは愚直なシミュレーションコード
+        </h2>
+        <p class="text-sm leading-relaxed mb-4">
+          直前の項の値が「それまでに何回登場したか」を次の項にしていくルールです。配列と連想配列（<code>map</code>）を使い、問題文の指示通りに愚直にシミュレーションを行うコードを書いてみましょう。
+        </p>
+
+        <div class="code-container">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel active:translate-x-0.5 active:translate-y-0.5"
+          >
+            コピー
+          </button>
+          <pre class="text-xs"><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+bool solve() {
+    int s, k;
+    cin &gt;&gt; s &gt;&gt; k;
+    if (s == 0 &amp;&amp; k == 0) {
+        return false;
+    }
+    vector&lt;int&gt; a;
+    map&lt;int, int&gt; cnt;
+
+    a.push_back(s);
+    cnt[s] = 1;
+
+    for (int i = 1; i &lt; k; i++) {
+        int nxt = cnt[a.back()];
+        a.push_back(nxt);
+        cnt[nxt]++;
+    }
+
+    cout &lt;&lt; a[k - 1] &lt;&lt; endl;
+    return true;
+}
+
+int main() {
+    while (solve());
+}</code></pre>
+        </div>
+
+        <div
+          class="win-panel p-3 bg-red-50 border-l-4 border-red-500 font-bold text-xs text-red-900 my-4 leading-relaxed"
+        >
+          ⚠️ <strong>なぜこのコードでは時間切れ（TLE）になるのか？</strong><br />
+          このコードでは、第2項、第3項、…と順番に第 <i>k</i> 項まで1つずつ愚直に生成しています。つまり、ループはちょうど
+          <i>k</i> &minus; 1 回実行されるため、全体の計算量は <strong>O(<i>k</i>)</strong> になります。<br />
+          今回の問題の制約は
+          <strong><i>k</i> &le; 10<sup>9</sup></strong>
+          と非常に大きいため、最悪で10億回ものループが必要になります。一般的な競技プログラミングの制限時間（約2秒）で実行できるループ回数は
+          <strong>10<sup>8</sup>（1億）回程度</strong> が目安なので、この方法では全く間に合いません。
+        </div>
+      </section>
+
+      <!-- 2. 法則性の発見 -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          2. 法則性の発見
+        </h2>
+        <p class="text-sm leading-relaxed mb-4">
+          「10億回のシミュレーションができない」となれば、何らかの高速なジャンプ（数学的な規則性）が必要です。まずは小さな
+          <i>s</i> について、シミュレーションプログラムを実行して得られた実際の出力（第40項まで）を眺めてみましょう。
+        </p>
+
+        <!-- 図：s=1〜9の出力可視化SVG -->
+        <h3 class="font-bold text-xs text-gray-700 mb-1">【図①：各初期値 s における生成数列の実際の並び】</h3>
+        <svg width="760" height="290" viewBox="0 0 760 290" class="mb-4 font-mono">
+          <rect x="0" y="0" width="760" height="290" fill="#fafafa" />
+
+          <!-- 各行のテキストとsの強調マーク -->
+          <g font-size="11" fill="#333">
+            <!-- s=1 -->
+            <text x="15" y="30" font-weight="bold" fill="#dc2626">s=1:</text>
+            <text x="55" y="30" fill="#111827">
+              1 1 2 1 3 1 4 1 5 1 6 1 7 1 8 1 9 1 10 1 11 1 12 1 13 1 14 1 15 1 16 1 17 1 18 1 19 1 20 1
+            </text>
+
+            <!-- s=2 -->
+            <text x="15" y="58" font-weight="bold" fill="#d97706">s=2:</text>
+            <text x="55" y="58" fill="#111827">
+              2 1 1 2 2 3 1 3 2 4 1 4 2 5 1 5 2 6 1 6 2 7 1 7 2 8 1 8 2 9 1 9 2 10 1 10 2 11 1 11
+            </text>
+
+            <!-- s=3 -->
+            <text x="15" y="86" font-weight="bold" fill="#059669">s=3:</text>
+            <text x="55" y="86" fill="#111827">
+              3 1 1 2 1 3 2 2 3 3 4 1 4 2 4 3 5 1 5 2 5 3 6 1 6 2 6 3 7 1 7 2 7 3 8 1 8 2 8 3
+            </text>
+
+            <!-- s=4 -->
+            <text x="15" y="114" font-weight="bold" fill="#2563eb">s=4:</text>
+            <text x="55" y="114" fill="#111827">
+              4 1 1 2 1 3 1 4 2 2 3 2 4 3 3 4 4 5 1 5 2 5 3 5 4 6 1 6 2 6 3 6 4 7 1 7 2 7 3 7
+            </text>
+
+            <!-- s=5 -->
+            <text x="15" y="142" font-weight="bold" fill="#7c3aed">s=5:</text>
+            <text x="55" y="142" font-weight="bold" fill="#7c3aed">5</text>
+            <text x="68" y="142" fill="#111827">1 1 2 1 3 1 4 1</text>
+            <text x="162" y="142" font-weight="bold" fill="#7c3aed">5</text>
+            <text x="175" y="142" fill="#111827">2 2 3 2 4 2</text>
+            <text x="249" y="142" font-weight="bold" fill="#7c3aed">5</text>
+            <text x="262" y="142" fill="#111827">3 3 4 3</text>
+            <text x="312" y="142" font-weight="bold" fill="#7c3aed">5</text>
+            <text x="325" y="142" fill="#111827">4 4</text>
+            <text x="350" y="142" font-weight="bold" fill="#7c3aed">5 5</text>
+            <text x="375" y="142" fill="#111827">6 1 6 2 6 3 6 4 6</text>
+            <text x="491" y="142" font-weight="bold" fill="#7c3aed">5</text>
+            <text x="504" y="142" fill="#111827">7 1 7 2 ...</text>
+
+            <!-- s=6 -->
+            <text x="15" y="170" font-weight="bold" fill="#4b5563">s=6:</text>
+            <text x="55" y="170" fill="#111827">
+              6 1 1 2 1 3 1 4 1 5 1 6 2 2 3 2 4 2 5 2 6 3 3 4 3 5 3 6 4 4 5 4 6 5 5 6 6 7 1 7
+            </text>
+
+            <!-- s=7 -->
+            <text x="15" y="198" font-weight="bold" fill="#4b5563">s=7:</text>
+            <text x="55" y="198" fill="#111827">
+              7 1 1 2 1 3 1 4 1 5 1 6 1 7 2 2 3 2 4 2 5 2 6 2 7 3 3 4 3 5 3 6 3 7 4 4 5 4 6 4
+            </text>
+
+            <!-- s=8 -->
+            <text x="15" y="226" font-weight="bold" fill="#4b5563">s=8:</text>
+            <text x="55" y="226" fill="#111827">
+              8 1 1 2 1 3 1 4 1 5 1 6 1 7 1 8 2 2 3 2 4 2 5 2 6 2 7 2 8 3 3 4 3 5 3 6 3 7 3 8
+            </text>
+
+            <!-- s=9 -->
+            <text x="15" y="254" font-weight="bold" fill="#4b5563">s=9:</text>
+            <text x="55" y="254" fill="#111827">
+              9 1 1 2 1 3 1 4 1 5 1 6 1 7 1 8 1 9 2 2 3 2 4 2 5 2 6 2 7 2 8 2 9 3 3 4 3 5 3 6
+            </text>
+          </g>
+
+          <!-- ガイドラインや注釈 -->
+          <line x1="55" y1="147" x2="65" y2="147" stroke="#7c3aed" stroke-width="2" />
+          <line x1="162" y1="147" x2="172" y2="147" stroke="#7c3aed" stroke-width="2" />
+          <line x1="249" y1="147" x2="259" y2="147" stroke="#7c3aed" stroke-width="2" />
+          <line x1="312" y1="147" x2="322" y2="147" stroke="#7c3aed" stroke-width="2" />
+          <line x1="350" y1="147" x2="368" y2="147" stroke="#7c3aed" stroke-width="2" />
+          <line x1="491" y1="147" x2="501" y2="147" stroke="#7c3aed" stroke-width="2" />
+          <text x="570" y="22" font-size="10" fill="#ef4444" font-weight="bold"></text>
+        </svg>
+
+        <p class="text-sm leading-relaxed mb-4">
+          上の出力をじっくり観察すると、初期値である
+          <strong><i>s</i> が何度も繰り返し現れる</strong> ことに気がつきます（上の図の紫色の部分など）。<br />
+          そこで、<b>「<i>s</i> が出現するたびに数列を区切る」</b>
+          という強力なアプローチを採用してみましょう。それぞれの区間が、明確な規則性を持った「群」として綺麗に分解されるはずです。
+        </p>
+      </section>
+
+      <!-- 3. 群数列への分割と内部構造 -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          3. 群数列への分割と内部構造
+        </h2>
+        <p class="text-sm leading-relaxed mb-4">
+          例として <strong><i>s</i> = 5</strong> のとき、出現した 5
+          の位置で数列を綺麗に区切って並べ直すと、以下のような巨大な周期構造（群数列）が完成します。
+        </p>
+
+        <!-- 図②：s=5の群数列全体の完全展開SVG -->
+        <h3 class="font-bold text-xs text-gray-700 mb-1">【図②：群数列への分割と完全展開（<i>s</i> = 5 の例）】</h3>
+        <svg width="780" height="550" viewBox="0 0 780 550" class="font-mono" xmlns="http://www.w3.org/2000/svg">
+          <!-- 全体背景 -->
+          <rect x="0" y="0" width="780" height="550" fill="#f8fafc" rx="8" />
+
+          <!-- タイトル -->
+          <text x="25" y="35" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1e293b">
+            【詳細分解】s = 5 における群数列の展開と各群の長さ（要素数）
+          </text>
+
+          <!-- ==========================================
+       1. 各群の背景ボックス (rect) と 数列テキスト
+       ========================================== -->
+          <g
+            font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"
+            font-size="12"
+            fill="#0f172a"
+          >
+            <!-- 第1群 (特殊区間) -->
+            <text x="25" y="64" font-family="sans-serif" font-weight="bold" fill="#dc2626">第1群</text>
+            <rect x="120" y="50" width="32" height="20" fill="#fee2e2" stroke="#ef4444" stroke-width="1" rx="3" />
+            <text x="128" y="64" font-weight="bold" fill="#991b1b">5</text>
+            <text x="162" y="64" font-family="sans-serif" font-size="11" fill="#64748b">(長さ: 1)</text>
+
+            <!-- ─── 前半ブロック：減少区間 (青系) ─── -->
+            <!-- 第2群 -->
+            <text x="25" y="90" font-family="sans-serif" font-weight="bold" fill="#2563eb">第2群</text>
+            <rect x="120" y="76" width="208" height="20" fill="#bfdbfe" stroke="#3b82f6" stroke-width="1" rx="3" />
+            <text x="128" y="90">1 1 2 1 3 1 4 1 5</text>
+            <text x="340" y="90" font-family="sans-serif" font-size="11" fill="#64748b">(長さ: 9)</text>
+
+            <!-- 第3群 -->
+            <text x="25" y="116" font-family="sans-serif" font-weight="bold" fill="#2563eb">第3群</text>
+            <rect x="120" y="102" width="164" height="20" fill="#dbeafe" stroke="#60a5fa" stroke-width="1" rx="3" />
+            <text x="128" y="116">2 2 3 2 4 2 5</text>
+            <text x="296" y="116" font-family="sans-serif" font-size="11" fill="#64748b">(長さ: 7)</text>
+
+            <!-- 第4群 -->
+            <text x="25" y="142" font-family="sans-serif" font-weight="bold" fill="#2563eb">第4群</text>
+            <rect x="120" y="128" width="120" height="20" fill="#bfdbfe" stroke="#3b82f6" stroke-width="1" rx="3" />
+            <text x="128" y="142">3 3 4 3 5</text>
+            <text x="252" y="142" font-family="sans-serif" font-size="11" fill="#64748b">(長さ: 5)</text>
+
+            <!-- 第5群 -->
+            <text x="25" y="168" font-family="sans-serif" font-weight="bold" fill="#2563eb">第5群</text>
+            <rect x="120" y="154" width="76" height="20" fill="#dbeafe" stroke="#60a5fa" stroke-width="1" rx="3" />
+            <text x="128" y="168">4 4 5</text>
+            <text x="208" y="168" font-family="sans-serif" font-size="11" fill="#64748b">(長さ: 3)</text>
+
+            <!-- 第6群 -->
+            <text x="25" y="194" font-family="sans-serif" font-weight="bold" fill="#2563eb">第6群</text>
+            <rect x="120" y="180" width="32" height="20" fill="#bfdbfe" stroke="#3b82f6" stroke-width="1" rx="3" />
+            <text x="128" y="194">5</text>
+            <text x="162" y="194" font-family="sans-serif" font-size="11" fill="#64748b">(長さ: 1)</text>
+
+            <!-- ─── パーテーション（境界線） ─── -->
+            <line x1="20" y1="208" x2="430" y2="208" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="4,4" />
+            <rect x="140" y="199" width="270" height="16" fill="#f8fafc" />
+            <text
+              x="275"
+              y="212"
+              font-family="sans-serif"
+              font-size="11"
+              fill="#64748b"
+              font-weight="bold"
+              text-anchor="middle"
+            >
+              ここから後半ブロック（長さ 2s = 10 で一定）
+            </text>
+
+            <!-- ─── 後半ブロック：一定区間 (緑系) ─── -->
+            <!-- 第7群 -->
+            <text x="25" y="232" font-family="sans-serif" font-weight="bold" fill="#16a34a">第7群</text>
+            <rect x="120" y="218" width="230" height="20" fill="#bbf7d0" stroke="#22c55e" stroke-width="1" rx="3" />
+            <text x="128" y="232">6 1 6 2 6 3 6 4 6 5</text>
+            <text x="362" y="232" font-family="sans-serif" font-size="11" fill="#64748b">(長さ: 10)</text>
+
+            <!-- 第8群 -->
+            <text x="25" y="258" font-family="sans-serif" font-weight="bold" fill="#16a34a">第8群</text>
+            <rect x="120" y="244" width="230" height="20" fill="#dcfce7" stroke="#4ade80" stroke-width="1" rx="3" />
+            <text x="128" y="258">7 1 7 2 7 3 7 4 7 5</text>
+            <text x="362" y="258" font-family="sans-serif" font-size="11" fill="#64748b">(長さ: 10)</text>
+
+            <!-- 第9群 -->
+            <text x="25" y="284" font-family="sans-serif" font-weight="bold" fill="#16a34a">第9群</text>
+            <rect x="120" y="270" width="230" height="20" fill="#bbf7d0" stroke="#22c55e" stroke-width="1" rx="3" />
+            <text x="128" y="284">8 1 8 2 8 3 8 4 8 5</text>
+            <text x="362" y="284" font-family="sans-serif" font-size="11" fill="#64748b">(長さ: 10)</text>
+
+            <!-- 第10群 -->
+            <text x="25" y="310" font-family="sans-serif" font-weight="bold" fill="#16a34a">第10群</text>
+            <rect x="120" y="296" width="230" height="20" fill="#dcfce7" stroke="#4ade80" stroke-width="1" rx="3" />
+            <text x="128" y="310">9 1 9 2 9 3 9 4 9 5</text>
+            <text x="362" y="310" font-family="sans-serif" font-size="11" fill="#64748b">(長さ: 10)</text>
+
+            <!-- 第11群 -->
+            <text x="25" y="336" font-family="sans-serif" font-weight="bold" fill="#16a34a">第11群</text>
+            <rect x="120" y="322" width="230" height="20" fill="#bbf7d0" stroke="#22c55e" stroke-width="1" rx="3" />
+            <text x="128" y="336">10 1 10 2 10 3 10 4 10 5</text>
+            <text x="362" y="336" font-family="sans-serif" font-size="11" fill="#64748b">(長さ: 10)</text>
+
+            <!-- 第12群 -->
+            <text x="25" y="362" font-family="sans-serif" font-weight="bold" fill="#16a34a">第12群</text>
+            <rect x="120" y="348" width="230" height="20" fill="#dcfce7" stroke="#4ade80" stroke-width="1" rx="3" />
+            <text x="128" y="362">11 1 11 2 11 3 11 4 11 5</text>
+            <text x="362" y="362" font-family="sans-serif" font-size="11" fill="#64748b">(長さ: 10)</text>
+
+            <!-- 第13群 -->
+            <text x="25" y="388" font-family="sans-serif" font-weight="bold" fill="#16a34a">第13群</text>
+            <rect x="120" y="374" width="230" height="20" fill="#bbf7d0" stroke="#22c55e" stroke-width="1" rx="3" />
+            <text x="128" y="388">12 1 12 2 12 3 12 4 12 5</text>
+            <text x="362" y="388" font-family="sans-serif" font-size="11" fill="#64748b">(長さ: 10)</text>
+
+            <!-- 第14群 (末尾省略区間) -->
+            <text x="25" y="414" font-family="sans-serif" font-weight="bold" fill="#64748b">第14群</text>
+            <rect
+              x="120"
+              y="400"
+              width="130"
+              height="20"
+              fill="#f1f5f9"
+              stroke="#cbd5e1"
+              stroke-width="1"
+              rx="3"
+              stroke-dasharray="2,2"
+            />
+            <text x="128" y="414" fill="#64748b">13 1 13 2 ...</text>
+          </g>
+
+          <!-- ==========================================
+       2. 右側の数式マッピング（中括弧）
+       ========================================== -->
+          <!-- 前半区間 (第2群〜第6群) -->
+          <path
+            d="M 450, 76 L 465, 76 L 465, 138 L 480, 138 L 465, 138 L 465, 200 L 450, 200"
+            fill="none"
+            stroke="#2563eb"
+            stroke-width="1.5"
+          />
+          <text x="495" y="133" font-family="sans-serif" font-size="12" font-weight="bold" fill="#2563eb">
+            1 &lt; i ≤ s+1 の減少区間
+          </text>
+          <text x="495" y="153" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e40af">
+            長さ = 13 - 2i
+          </text>
+
+          <!-- 後半区間 (第7群〜第13群+) -->
+          <path
+            d="M 450, 218 L 465, 218 L 465, 306 L 480, 306 L 465, 306 L 465, 394 L 450, 394"
+            fill="none"
+            stroke="#16a34a"
+            stroke-width="1.5"
+          />
+          <text x="495" y="301" font-family="sans-serif" font-size="12" font-weight="bold" fill="#16a34a">
+            s+1 &lt; i の一定区間
+          </text>
+          <text x="495" y="321" font-family="sans-serif" font-size="12" font-weight="bold" fill="#166534">
+            長さ = 2s = 10
+          </text>
+
+          <!-- ==========================================
+       3. 下部：数式と挙動のまとめ表
+       ========================================== -->
+          <line x1="25" y1="440" x2="755" y2="440" stroke="#e2e8f0" stroke-width="1" />
+
+          <text x="35" y="465" font-family="sans-serif" font-size="12" font-weight="bold" fill="#334155">
+            【数理的性質のまとめ】 s = 5 のときの第 i 群の長さ推移
+          </text>
+          <g font-family="ui-monospace, monospace" font-size="12" fill="#475569">
+            <text x="45" y="490">・ i = 1 ───&gt; 長さ: 1 (初期値の単体要素)</text>
+            <text x="45" y="510">・ 1 &lt; i ≤ 6 ───&gt; 長さ: 13 - 2i [ 9, 7, 5, 3, 1 と 2ずつ減少 ]</text>
+            <text x="45" y="530">• 6 &lt; i ───&gt; 長さ: 10 [ 10 で完全に固定・安定化 ]</text>
+          </g>
+        </svg>
+
+        <p class="text-sm leading-relaxed mb-4">
+          このとき、第 <i>i</i> 群の数列の長さは以下のように結論付けることができます。
+        </p>
+
+        <div class="memo-box text-sm font-bold text-blue-900 space-y-2 mb-6">
+          <div>• <i>i</i> = 1 のとき： <span class="text-red-600">1</span></div>
+          <div>
+            • 1 &lt; <i>i</i> &le; <i>s</i> + 1 のとき：
+            <span class="text-red-600">2<i>s</i> &minus; 2<i>i</i> + 3</span>
+          </div>
+          <div class="pl-4 text-xs font-normal text-gray-700">
+            ➔ <b>【なぜ？】</b> 前半の区間では、群が1つ進むたびに毎回「両端の2要素」が減っていくため、群の長さは規則的に
+            <b>2ずつ短く</b> なっていきます。
+          </div>
+          <div>
+            • <i>s</i> + 1 &lt; <i>i</i> のとき： <span class="text-red-600">2<i>s</i></span>
+          </div>
+          <div class="pl-4 text-xs font-normal text-gray-700">
+            ➔ <b>【なぜ？】</b> 前半を抜けきると減る要素がなくなり、常に一定の周期（長さ
+            2<i>s</i>）でパターンが繰り返されるようになります。
+          </div>
+        </div>
+
+        <p class="text-sm leading-relaxed mb-4">
+          さらに、第 <i>i</i> 群における第 <i>j</i> 項 (1 &le; <i>j</i> &le; 第 <i>i</i> 群の数列の長さ)
+          の内部の値も、完全に数式化が可能です。
+        </p>
+
+        <div class="space-y-4 text-sm bg-gray-50 p-4 border-2 border-gray-300">
+          <div>
+            <h4 class="font-bold text-gray-800">💡 1. <i>i</i> = 1 のとき</h4>
+            <p class="text-xs text-gray-600 pl-4">
+              <i>j</i> = 1 のとき: <span class="font-bold text-blue-700"><i>s</i></span>
+            </p>
+          </div>
+          <hr />
+          <div>
+            <h4 class="font-bold text-gray-800">💡 2. 1 &lt; <i>i</i> &le; <i>s</i> + 1 のとき</h4>
+            <p class="text-xs text-gray-600 pl-4 mb-1">
+              奇数番目の項は <i>i</i> &minus; 1 から始まり 1 ずつ増加し、偶数番目は <i>i</i> &minus; 1
+              で一定となるため、
+            </p>
+            <p class="text-xs font-mono pl-4">
+              • <i>j</i> が奇数のとき:
+              <span class="font-bold text-blue-700">(<i>i</i> &minus; 1) + (<i>j</i> &minus; 1) / 2</span><br />
+              • <i>j</i> が偶数のとき: <span class="font-bold text-red-600"><i>i</i> &minus; 1</span>
+            </p>
+          </div>
+          <hr />
+          <div>
+            <h4 class="font-bold text-gray-800">💡 3. <i>s</i> + 1 &lt; <i>i</i> のとき</h4>
+            <p class="text-xs text-gray-600 pl-4 mb-1">
+              奇数番目の項は常に <i>i</i> &minus; 1 で一定、偶数番目の項は 1 から 1 ずつ増加するため、
+            </p>
+            <p class="text-xs font-mono pl-4">
+              • <i>j</i> が奇数のとき: <span class="font-bold text-red-600"><i>i</i> &minus; 1</span><br />
+              • <i>j</i> が偶数のとき: <span class="font-bold text-blue-700"><i>j</i> / 2</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. 実装に向けたアドバイス -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          4. 実装に向けたアドバイス
+        </h2>
+        <p class="text-sm leading-relaxed mb-4">
+          ここまで数式化できれば、与えられた
+          <i>k</i> が「第何群の、第何項に含まれるか」を特定して答えを出すことができます。
+          実装する際は、以下のように前半ブロックと後半ブロックで分けて処理を考えることで、10<sup>9</sup>という大きな制約を安全に突破できます。
+        </p>
+
+        <h3 class="font-bold text-sm text-gray-800 mb-2">1. 前半ブロック (1 &lt; <i>i</i> &le; <i>s</i> + 1) の処理</h3>
+        <p class="text-sm leading-relaxed mb-4">
+          群の長さが徐々に短くなっていく区間です。ここで「 <i>k</i> は最大 10<sup>9</sup>
+          だから、群を1つずつ調べるループを回すと TLE（時間切れ）になるのでは？」と心配になるかもしれません。
+          しかし、結論から言うと第 <i>i</i> 群に含まれるかを1群ずつ愚直に判定するループ処理で全く問題ありません。
+        </p>
+        <p class="text-sm leading-relaxed mb-4">
+          なぜなら、群の長さは 2<i>s</i>&minus;1, 2<i>s</i>&minus;3, 2<i>s</i>&minus;5... と減っていくため、<i>i</i>
+          群目までに消費する要素数は (2<i>s</i>&minus;1) + (2<i>s</i>&minus;3) + ...
+          となり、群数が増えるほど二次関数的に爆発して増加します。 つまり、<i>k</i> 項に到達するまでに必要な群数は高々
+          <b>&radic;<i>k</i> 個程度</b> しかありません。 <i>k</i> = 10<sup>9</sup> の場合でも &radic;10<sup>9</sup>
+          &asymp; 31,622 回程度のループで済むため、計算量は
+          <b>O(min(<i>s</i>, &radic;<i>k</i>))</b> となり、実行時間制限に対して非常に余裕で間に合います。
+        </p>
+        <p class="text-sm leading-relaxed mb-4">
+          無理に二次方程式の解の公式などをこねくり回すより、<code>for</code> 文などで「現在の群の長さを
+          <i>k</i> から引いていく」処理を書く方が、実装ミスを防げて安全です。
+        </p>
+
+        <h3 class="font-bold text-sm text-gray-800 mb-2">2. 後半ブロック (<i>s</i> + 1 &lt; <i>i</i>) の処理</h3>
+        <p class="text-sm leading-relaxed mb-4">
+          前半のループを抜けてもまだ <i>k</i> が残っている（0より大きい）場合は、この「群の長さが 2<i>s</i>
+          で完全に一定になる区間」に突入したことを意味します。
+          ここからはずっと同じ長さの群が続くため、もはや1つずつループで引いていく必要はありません。
+        </p>
+        <p class="text-sm leading-relaxed mb-4">
+          1群の長さが常に 2<i>s</i> なので、<b>「何群進んだか（商）」</b>と<b>「群の何番目か（余り）」</b>は、残った
+          <i>k</i> に対して、 <br />• 進む群数: <code>k / (2 * s)</code> <br />• 群内の位置: <code>k % (2 * s)</code>
+          <br />といった割り算を使うだけで、一発で位置を割り出すことができます。
+        </p>
+      </section>
+
+      <!-- 5. 実装への3つのステップ -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          5. 実装への3つのステップ
+        </h2>
+        <p class="text-sm leading-relaxed mb-4">実装は大きく分けて以下の <b>3段階</b> で処理を行います。</p>
+
+        <div class="space-y-3">
+          <div class="win-panel p-3 bg-white border-l-4 border-blue-500">
+            <span class="font-bold text-blue-900 text-xs">① 第1群だけ特別扱いする</span>
+            <p class="text-xs text-gray-700 mt-1">
+              <i>k</i> = 1 のときは、初期値 <i>s</i> をそのまま出力して処理を終了します。
+            </p>
+          </div>
+          <div class="win-panel p-3 bg-white border-l-4 border-blue-500">
+            <span class="font-bold text-blue-900 text-xs">② 前半ブロックを1群ずつ処理する</span>
+            <p class="text-xs text-gray-700 mt-1">
+              ループを回し、現在の群の長さを <i>k</i> から引いていきます。<i>k</i>
+              が群の長さ以下になれば、そこが答えの所属位置です。
+            </p>
+          </div>
+          <div class="win-panel p-3 bg-white border-l-4 border-blue-500">
+            <span class="font-bold text-blue-900 text-xs">③ 後半ブロックは割り算だけで処理する</span>
+            <p class="text-xs text-gray-700 mt-1">
+              残った <i>k</i> から、周期 2<i>s</i> を使った割り算で一撃で答えの値を逆算します。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. 最終実装コード -->
+      <section class="bg-white border-4 border-gray-400 shadow-[4px_4px_0_#888] p-6 text-left">
+        <h2 class="text-lg font-bold text-blue-900 bg-blue-100 border-l-4 border-blue-900 px-3 py-1 mb-4">
+          6. 最終実装コード
+        </h2>
+        <p class="text-xs mb-3 text-gray-700">
+          以下のコードはそのままコピーして使用可能です。オーバーフローを防ぐため
+          <code>long long</code> 型を使用しています。
+        </p>
+
+        <div class="code-container">
+          <button
+            onclick="copyCode(this)"
+            class="absolute right-3 top-3 z-10 bg-blue-600 text-white text-xs px-2 py-1 win-panel active:translate-x-0.5 active:translate-y-0.5"
+          >
+            コピー
+          </button>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+bool solve(){
+    long long s, k;
+    cin &gt;&gt; s &gt;&gt; k;
+    if (s == 0 &amp;&amp; k == 0) return false;
+    
+    // ① 第1群だけ特別扱いする
+    if (k == 1){
+        cout &lt;&lt; s &lt;&lt; endl;
+        return true;
+    }
+    
+    k--; // 第1群(s)の1要素分を消費
+    
+    // ② 前半ブロックを1群ずつ処理する
+    for (long long i = 1; i &lt;= s; i++){
+        long long t = 2 * s - 2 * i + 1; // 現在の群の長さ
+        if (k &lt;= t){
+            if (k == t) cout &lt;&lt; s &lt;&lt; endl;
+            else cout &lt;&lt; (k % 2 ? k / 2 + i : i) &lt;&lt; endl;
+            return true;
+        }
+        else k -= t;
+    }
+    
+    // ③ 後半ブロックは割り算だけで処理する
+    long long p = (k - 1) / (2 * s);
+    long long q = (k - 1) % (2 * s) + 1;
+    cout &lt;&lt; (q % 2 ? s + 1 + p : q / 2) &lt;&lt; endl;
+    return true;
+}
+
+int main(){
+    while(solve());
+}</code></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="text-center py-10">
+      <div
+        class="inline-block bg-white border-2 border-gray-400 px-6 py-2 shadow-[2px_2px_0_#000] text-sm font-bold text-gray-700 win-panel"
+      >
+        IQ プログラミングサークル ICPC部 - 過去問解説ライブラリ
+      </div>
+    </footer>
+
+    <script>
+      hljs.highlightAll();
+
+      function copyCode(btn) {
+        const container = btn.closest('.code-container');
+        const code = container.querySelector('code').innerText;
+        navigator.clipboard.writeText(code);
+
+        const originalText = btn.innerText;
+        btn.innerText = '完了！';
+        btn.classList.remove('bg-blue-600');
+        btn.classList.add('bg-green-600');
+
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('bg-green-600');
+          btn.classList.add('bg-blue-600');
+        }, 1500);
+      }
+    </script>
+  </body>
+</html>
